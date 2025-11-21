@@ -53,4 +53,4 @@ If you encounter issues or have questions, please:
 
 ## License
 
-The code in this repository is licensed under the Open BSV License. See [LICENSE](../LICENSE) for details. 
+The code in this repository is licensed under the Open BSV License. See [LICENSE](../LICENSE) for details.

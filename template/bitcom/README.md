@@ -185,4 +185,4 @@ const (
 - [BitcoinSchema.org](https://bitcoinschema.org/) - Standards for on-chain data formats
 - [go-map](https://github.com/BitcoinSchema/go-map) - Go implementation of MAP
 - [go-aip](https://github.com/BitcoinSchema/go-aip) - Go implementation of AIP
-- [go-b](https://github.com/BitcoinSchema/go-b) - Go implementation of B 
+- [go-b](https://github.com/BitcoinSchema/go-b) - Go implementation of B

@@ -104,7 +104,7 @@ func TestLock(t *testing.T) {
 
 			result := tt.bitcom.Lock()
 			if len(tt.expected) == 0 {
-				require.Equal(t, len(tt.expected), len(*result))
+				require.Len(t, *result, len(tt.expected))
 				return
 			}
 			require.True(t, bytes.Equal(tt.expected, *result), "expected %x but got %x", tt.expected, *result)
@@ -120,7 +120,7 @@ func TestFindReturn(t *testing.T) {
 
 	// Test nil script
 	var nilScript *script.Script
-	result := findReturn(nilScript, 0)
+	result := findReturn(nilScript)
 	require.Equal(t, -1, result, "Expected -1 for nil script in findReturn")
 
 	// Test for OP_RETURN with and without prefix
@@ -128,7 +128,7 @@ func TestFindReturn(t *testing.T) {
 	_ = s.AppendOpcodes(script.OpRETURN)
 	_ = s.AppendPushData([]byte("test data"))
 
-	result = findReturn(s, 0)
+	result = findReturn(s)
 	require.Equal(t, 0, result, "Expected 0 for OP_RETURN without prefix in findReturn")
 
 	// Test for OP_RETURN without prefix
@@ -137,7 +137,7 @@ func TestFindReturn(t *testing.T) {
 	_ = s2.AppendOpcodes(script.OpRETURN)
 	_ = s2.AppendPushData([]byte("test data2"))
 
-	result = findReturn(s2, 0)
+	result = findReturn(s2)
 	require.Equal(t, 1, result, "Expected 1 for OP_RETURN with prefix in findReturn")
 }
 
@@ -259,7 +259,7 @@ func TestDecode_WithNoPipe(t *testing.T) {
 	require.NotNil(t, result, "Decode should return non-nil result for valid script")
 
 	// Verify the decoder behavior for a single protocol
-	// Note: The current implementation returns an empty protocols array
+	// The current implementation returns an empty protocols array
 }
 
 // TestFindPipe_EmptyScript verifies that findPipe correctly

@@ -45,7 +45,7 @@ func DecodeAIP(b *Bitcom) []*AIP {
 			}
 
 			aip := &AIP{
-				BitcomIndex: uint(protoIdx),
+				BitcomIndex: uint(protoIdx), //nolint:gosec // G115: safe conversion
 			}
 
 			// Read ALGORITHM (first chunk)

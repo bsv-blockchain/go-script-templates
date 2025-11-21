@@ -25,7 +25,7 @@ func TestOrdLock(t *testing.T) {
 
 	// Basic validation
 	require.Equal(t, uint64(1000), ordLock.Price)
-	require.Equal(t, 0.5, ordLock.PricePer)
+	require.InEpsilon(t, 0.5, ordLock.PricePer, 0.0001)
 	require.Equal(t, []byte("test payout"), ordLock.PayOut)
 	require.NotNil(t, ordLock.Seller)
 }
@@ -121,8 +121,8 @@ func TestOrdLockPrefixSuffix(t *testing.T) {
 	// Verify that the OrdLockPrefix and OrdLockSuffix constants are set
 	require.NotNil(t, OrdLockPrefix)
 	require.NotNil(t, OrdLockSuffix)
-	require.True(t, len(OrdLockPrefix) > 0)
-	require.True(t, len(OrdLockSuffix) > 0)
+	require.NotEmpty(t, OrdLockPrefix)
+	require.NotEmpty(t, OrdLockSuffix)
 
 	// Log the lengths for diagnostic purposes
 	t.Logf("OrdLockPrefix length: %d", len(OrdLockPrefix))
@@ -174,8 +174,8 @@ func TestDecodeWithTestVector(t *testing.T) {
 	expectedOutputIndex := 0         // The OrdLock is expected in the first output
 
 	// Transaction structure validation
-	require.Equal(t, 3, len(tx.Outputs), "Transaction should have 3 outputs")
-	require.Equal(t, 2, len(tx.Inputs), "Transaction should have 2 inputs")
+	require.Len(t, tx.Outputs, 3, "Transaction should have 3 outputs")
+	require.Len(t, tx.Inputs, 2, "Transaction should have 2 inputs")
 
 	// Log transaction info
 	t.Logf("Transaction ID: %s", tx.TxID().String())

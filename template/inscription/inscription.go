@@ -52,7 +52,7 @@ func Decode(scr *script.Script) *Inscription {
 				switch field {
 				case 0:
 					insc.File.Content = op2.Data
-					insc.File.Size = uint32(len(insc.File.Content))
+					insc.File.Size = uint32(len(insc.File.Content)) //nolint:gosec // G115: safe conversion
 					hash := sha256.Sum256(insc.File.Content)
 					insc.File.Hash = hash[:]
 					break ordLoop

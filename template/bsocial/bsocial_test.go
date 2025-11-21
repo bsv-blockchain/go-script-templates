@@ -460,7 +460,7 @@ func TestPostFromVectors(t *testing.T) {
 }
 
 // TestReplyFromVectors validates Reply actions from test vectors
-// Note: replies use "post" type with context
+// Replies use "post" type with context
 func TestReplyFromVectors(t *testing.T) {
 	testBSocialFromVectors(t, "testdata/reply_test_vectors.json", "post")
 }

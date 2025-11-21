@@ -10,7 +10,7 @@ The goal of this repository is to provide a place where developers from around t
 
 ## Available Templates
 
-| Template                            | Description                                                 | 
+| Template                            | Description                                                 |
 |-------------------------------------|-------------------------------------------------------------|
 | [BitCom](template/bitcom)           | BitCom protocol utilities (B, MAP, AIP) for structured data |
 | [BSocial](template/bsocial)         | Social media actions using BitcoinSchema.org standards      |

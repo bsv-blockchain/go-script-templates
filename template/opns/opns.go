@@ -15,18 +15,25 @@ import (
 
 const DIFFICULTY = 22
 
+// ErrInvalidNonce is returned when a nonce is invalid
+var ErrInvalidNonce = errors.New("invalid nonce")
+
 var (
 	txStr   = "58b7558ea379f24266c7e2f5fe321992ad9a724fd7a87423ba412677179ccb25_0"
-	GENESIS *transaction.Outpoint
+	genesis *transaction.Outpoint //nolint:gochecknoglobals // GENESIS is a package-level constant
 	comp    = big.NewInt(0)
 )
 
-func init() {
-	var err error
-	GENESIS, err = transaction.OutpointFromString(txStr)
-	if err != nil {
-		panic("Failed to parse genesis outpoint: " + err.Error())
+// GENESIS returns the genesis outpoint, initializing it lazily if needed
+func GENESIS() *transaction.Outpoint {
+	if genesis == nil {
+		var err error
+		genesis, err = transaction.OutpointFromString(txStr)
+		if err != nil {
+			panic("Failed to parse genesis outpoint: " + err.Error())
+		}
 	}
+	return genesis
 }
 
 // type OpNS struct {
@@ -75,6 +82,7 @@ type OpNS struct {
 
 type OpnsUnlocker struct {
 	OpNS
+
 	Char        byte           `json:"char"`
 	OwnerScript *script.Script `json:"ownerScript"`
 	Nonce       []byte         `json:"nonce"`
@@ -89,7 +97,7 @@ func Decode(s *script.Script) *OpNS {
 	o := &OpNS{}
 	if opGenesis, err := s.ReadOp(&pos); err != nil {
 		return nil
-	} else if !bytes.Equal(opGenesis.Data, GENESIS.TxBytes()) {
+	} else if !bytes.Equal(opGenesis.Data, GENESIS().TxBytes()) {
 		return nil
 	} else if opClaimed, err := s.ReadOp(&pos); err != nil {
 		return nil
@@ -108,12 +116,12 @@ func Decode(s *script.Script) *OpNS {
 
 func Lock(claimed []byte, domain string, pow []byte) *script.Script {
 	state := script.NewFromBytes([]byte{})
-	state.AppendOpcodes(script.OpRETURN, script.OpFALSE)
-	state.AppendPushData(GENESIS.TxBytes())
-	state.AppendPushData(claimed)
-	state.AppendPushData([]byte(domain))
-	state.AppendPushData(pow)
-	stateSize := uint32(len(*state) - 1)
+	_ = state.AppendOpcodes(script.OpRETURN, script.OpFALSE)
+	_ = state.AppendPushData(GENESIS().TxBytes())
+	_ = state.AppendPushData(claimed)
+	_ = state.AppendPushData([]byte(domain))
+	_ = state.AppendPushData(pow)
+	stateSize := uint32(len(*state) - 1) //nolint:gosec // G115: len() always returns non-negative
 	stateScript := binary.LittleEndian.AppendUint32(*state, stateSize)
 	stateScript = append(stateScript, 0x00)
 
@@ -126,7 +134,7 @@ func Lock(claimed []byte, domain string, pow []byte) *script.Script {
 
 func (o *OpNS) Unlock(char byte, nonce []byte, ownerScript *script.Script) (*OpnsUnlocker, error) {
 	if !o.TestSolution(char, nonce) {
-		return nil, errors.New("invalid nonce")
+		return nil, ErrInvalidNonce
 	}
 	unlock := &OpnsUnlocker{
 		OpNS:        *o,
@@ -151,20 +159,20 @@ func (o *OpNS) TestSolution(char byte, nonce []byte) bool {
 func (o *OpnsUnlocker) Sign(tx *transaction.Transaction, inputIndex uint32) (*script.Script, error) {
 	unlockScript := &script.Script{}
 
-	unlockScript.AppendPushData([]byte{o.Char})
-	unlockScript.AppendPushData([]byte(o.Nonce))
-	unlockScript.AppendPushData(*o.OwnerScript)
+	_ = unlockScript.AppendPushData([]byte{o.Char})
+	_ = unlockScript.AppendPushData(o.Nonce)
+	_ = unlockScript.AppendPushData(*o.OwnerScript)
 	trailingOutputs := []byte{}
 	if len(tx.Outputs) > 3 {
 		for _, output := range tx.Outputs[3:] {
 			trailingOutputs = append(trailingOutputs, output.Bytes()...)
 		}
 	}
-	unlockScript.AppendPushData(trailingOutputs)
+	_ = unlockScript.AppendPushData(trailingOutputs)
 	if preimage, err := tx.CalcInputPreimage(inputIndex, sighash.All|sighash.AnyOneCanPayForkID); err != nil {
 		return nil, err
 	} else {
-		unlockScript.AppendPushData(preimage)
+		_ = unlockScript.AppendPushData(preimage)
 	}
 	return unlockScript, nil
 }
@@ -181,6 +189,7 @@ func (o *OpnsUnlocker) EstimateLength(tx *transaction.Transaction, inputIndex ui
 	preimage, _ := tx.CalcInputPreimage(inputIndex, sighash.AnyOneCanPayForkID)
 	preimagePrefix, _ := script.PushDataPrefix(preimage)
 
+	//nolint:gosec // G115: safe conversion of known small values
 	return uint32(len(contract) +
 		4 + // OP_RETURN isGenesis push char
 		33 + // push data nonce

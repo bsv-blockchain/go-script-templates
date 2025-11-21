@@ -36,7 +36,7 @@ func Decode(s *script.Script) *LockToMint {
 	ltm.Symbol = string(op.Data)
 	if op, err = s.ReadOp(&pos); err != nil {
 		return nil
-	} else if number, err := interpreter.MakeScriptNumber(op.Data, len(op.Data), true, true); err != nil {
+	} else if number, numErr := interpreter.MakeScriptNumber(op.Data, len(op.Data), true, true); numErr != nil {
 		return nil
 	} else {
 		ltm.Max = number.Val.Uint64()
@@ -51,21 +51,21 @@ func Decode(s *script.Script) *LockToMint {
 	}
 	if op, err = s.ReadOp(&pos); err != nil {
 		return nil
-	} else if number, err := interpreter.MakeScriptNumber(op.Data, len(op.Data), true, true); err != nil {
+	} else if number, numErr := interpreter.MakeScriptNumber(op.Data, len(op.Data), true, true); numErr != nil {
 		return nil
 	} else {
 		ltm.Multiplier = number.Val.Uint64()
 	}
 	if op, err = s.ReadOp(&pos); err != nil {
 		return nil
-	} else if number, err := interpreter.MakeScriptNumber(op.Data, len(op.Data), true, true); err != nil {
+	} else if number, numErr := interpreter.MakeScriptNumber(op.Data, len(op.Data), true, true); numErr != nil {
 		return nil
 	} else {
 		ltm.LockDuration = number.Val.Uint64()
 	}
 	if op, err = s.ReadOp(&pos); err != nil {
 		return nil
-	} else if number, err := interpreter.MakeScriptNumber(op.Data, len(op.Data), true, true); err != nil {
+	} else if number, numErr := interpreter.MakeScriptNumber(op.Data, len(op.Data), true, true); numErr != nil {
 		return nil
 	} else {
 		ltm.StartHeight = number.Val.Uint64()

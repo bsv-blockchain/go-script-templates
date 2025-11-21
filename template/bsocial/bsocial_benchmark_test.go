@@ -18,7 +18,7 @@ func loadTransactionForBenchmark(b *testing.B, txID string) *transaction.Transac
 	filePath := "testdata/" + txID + ".hex"
 
 	// Read the file
-	data, err := os.ReadFile(filePath)
+	data, err := os.ReadFile(filePath) //nolint:gosec // G304: test file paths are controlled
 	if err != nil {
 		b.Fatalf("Failed to read transaction file '%s': %v", filePath, err)
 		return nil

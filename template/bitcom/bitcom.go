@@ -22,7 +22,7 @@ func Decode(scr *script.Script) (bitcom *Bitcom) {
 		}
 	}
 
-	pos := findReturn(scr, 0)
+	pos := findReturn(scr)
 	if pos == -1 {
 		return bitcom
 	}
@@ -74,9 +74,9 @@ func (b *Bitcom) Lock() *script.Script {
 	return s
 }
 
-func findReturn(scr *script.Script, from int) int {
+func findReturn(scr *script.Script) int {
 	if scr != nil {
-		i := from
+		i := 0
 		for i < len(*scr) {
 			startPos := i
 			if op, err := scr.ReadOp(&i); err == nil && op.Op == script.OpRETURN {

@@ -225,5 +225,5 @@ func TestEstimateLength_Basic(t *testing.T) {
 	tx := transaction.NewTransaction()
 	tx.AddInput(&transaction.TransactionInput{})
 	length := unlock.EstimateLength(tx, 0)
-	require.Greater(t, length, uint32(0))
+	require.Positive(t, length)
 }

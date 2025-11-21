@@ -218,7 +218,7 @@ func TestDecodeSIGMA(t *testing.T) {
 				t.Logf("Result: %+v", result)
 			}
 
-			require.Equal(t, len(tt.expected), len(result))
+			require.Len(t, result, len(tt.expected))
 
 			if len(tt.expected) > 0 {
 				for i, expectedSigma := range tt.expected {
@@ -450,13 +450,13 @@ func TestVerify(t *testing.T) {
 			err := tt.sigmaSignature.Verify()
 
 			if tt.expectValid {
-				assert.NoError(t, err, "Verification should succeed")
+				require.NoError(t, err, "Verification should succeed")
 				assert.True(t, tt.sigmaSignature.Valid, "Signature should be marked as valid")
 			} else {
 				if tt.sigmaSignature.SignerAddress == "" || tt.sigmaSignature.SignatureValue == "" || tt.sigmaSignature.Message == "" {
-					assert.Error(t, err, "Verification should fail due to missing data")
+					require.Error(t, err, "Verification should fail due to missing data")
 				} else {
-					assert.Error(t, err, "Verification should fail")
+					require.Error(t, err, "Verification should fail")
 					assert.False(t, tt.sigmaSignature.Valid, "Signature should be marked as invalid")
 				}
 			}

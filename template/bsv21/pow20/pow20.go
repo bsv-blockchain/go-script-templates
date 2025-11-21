@@ -18,6 +18,9 @@ import (
 	"github.com/bsv-blockchain/go-script-templates/template/bsv21"
 )
 
+// ErrMultipleChangeOutputs is returned when a transaction has multiple change outputs
+var ErrMultipleChangeOutputs = errors.New("multiple change outputs")
+
 // Pow20 represents a POW20 token, extending BSV21 with POW20-specific fields
 type Pow20 struct {
 	// BSV21 base token data
@@ -33,7 +36,8 @@ type Pow20 struct {
 
 // Pow20Unlocker is a Pow20 with fields for unlocking
 type Pow20Unlocker struct {
-	Pow20                     // Embed Pow20
+	Pow20 // Embed Pow20
+
 	Nonce     []byte          `json:"nonce,omitempty"`
 	Recipient *script.Address `json:"recipient,omitempty"`
 }
@@ -62,8 +66,8 @@ func Decode(s *script.Script) *Pow20 {
 			}
 
 			// Parse POW20-specific fields from the JSON
-			if max, ok := jsonData["maxSupply"].(string); ok {
-				maxVal, err := strconv.ParseUint(max, 10, 64)
+			if maxSupply, ok := jsonData["maxSupply"].(string); ok {
+				maxVal, err := strconv.ParseUint(maxSupply, 10, 64)
 				if err == nil {
 					pow20.MaxSupply = maxVal
 				}
@@ -115,7 +119,7 @@ func Decode(s *script.Script) *Pow20 {
 
 	if op, err = s.ReadOp(&pos); err != nil {
 		return nil
-	} else if number, err := interpreter.MakeScriptNumber(op.Data, len(op.Data), true, true); err != nil {
+	} else if number, numErr := interpreter.MakeScriptNumber(op.Data, len(op.Data), true, true); numErr != nil {
 		return nil
 	} else {
 		p.MaxSupply = number.Val.Uint64()
@@ -123,7 +127,7 @@ func Decode(s *script.Script) *Pow20 {
 	if op, err = s.ReadOp(&pos); err != nil {
 		return nil
 	} else if op.Op >= script.Op1 && op.Op <= script.Op16 {
-		dec := uint8(op.Op - 0x50)
+		dec := op.Op - 0x50
 		p.Bsv21.Decimals = &dec
 	} else if len(op.Data) == 1 {
 		dec := op.Data[0]
@@ -131,7 +135,7 @@ func Decode(s *script.Script) *Pow20 {
 	}
 	if op, err = s.ReadOp(&pos); err != nil {
 		return nil
-	} else if number, err := interpreter.MakeScriptNumber(op.Data, len(op.Data), true, true); err != nil {
+	} else if number, numErr := interpreter.MakeScriptNumber(op.Data, len(op.Data), true, true); numErr != nil {
 		return nil
 	} else {
 		p.Reward = number.Val.Uint64()
@@ -148,7 +152,7 @@ func Decode(s *script.Script) *Pow20 {
 	p.Bsv21.Id = string(op.Data)
 	if op, err = s.ReadOp(&pos); err != nil {
 		return nil
-	} else if number, err := interpreter.MakeScriptNumber(op.Data, len(op.Data), true, true); err != nil {
+	} else if number, numErr := interpreter.MakeScriptNumber(op.Data, len(op.Data), true, true); numErr != nil {
 		return nil
 	} else {
 		p.Supply = number.Val.Uint64()
@@ -190,8 +194,7 @@ func (p *Pow20) BuildUnlockTx(nonce []byte, recipient, changeAddress *script.Add
 		Satoshis:      1,
 	})
 	if changeAddress != nil {
-		var change *transaction.TransactionOutput
-		change = &transaction.TransactionOutput{
+		change := &transaction.TransactionOutput{
 			Change: true,
 		}
 		change.LockingScript, _ = p2pkh.Lock(changeAddress)
@@ -230,7 +233,7 @@ func (p *Pow20) Lock(supply uint64) *script.Script {
 	}
 
 	if decimals <= 16 {
-		_ = s.AppendOpcodes(byte(decimals + 0x50))
+		_ = s.AppendOpcodes(decimals + 0x50)
 	} else {
 		_ = s.AppendPushData([]byte{decimals})
 	}
@@ -242,7 +245,7 @@ func (p *Pow20) Lock(supply uint64) *script.Script {
 	_ = state.AppendOpcodes(script.OpRETURN, script.OpFALSE)
 	_ = state.AppendPushData([]byte(p.Bsv21.Id))
 	_ = state.AppendPushData(uint64ToBytes(supply))
-	stateSize := uint32(len(*state) - 1)
+	stateSize := uint32(len(*state) - 1) //nolint:gosec // G115: len() always returns non-negative
 	stateScript := binary.LittleEndian.AppendUint32(*state, stateSize)
 	stateScript = append(stateScript, 0x00)
 
@@ -266,7 +269,7 @@ func (p *Pow20Unlocker) Sign(tx *transaction.Transaction, inputIndex uint32) (*s
 
 	// pow := o.Mine(o.Char)
 	_ = unlockScript.AppendPushData(p.Recipient.PublicKeyHash)
-	_ = unlockScript.AppendPushData([]byte(p.Nonce))
+	_ = unlockScript.AppendPushData(p.Nonce)
 	if preimage, err := tx.CalcInputPreimage(inputIndex, sighash.All|sighash.AnyOneCanPayForkID); err != nil {
 		return nil, err
 	} else {
@@ -276,7 +279,7 @@ func (p *Pow20Unlocker) Sign(tx *transaction.Transaction, inputIndex uint32) (*s
 	for _, output := range tx.Outputs {
 		if output.Change {
 			if change != nil {
-				return nil, errors.New("multiple change outputs")
+				return nil, ErrMultipleChangeOutputs
 			}
 			change = output
 		}
@@ -296,6 +299,7 @@ func (o *Pow20Unlocker) EstimateLength(tx *transaction.Transaction, inputIndex u
 	preimage, _ := tx.CalcInputPreimage(inputIndex, sighash.AnyOneCanPayForkID|sighash.All)
 	preimagePrefix, _ := script.PushDataPrefix(preimage)
 
+	//nolint:gosec // G115: safe conversion of known small values
 	return uint32(55 + // OP_RETURN isGenesis push recipient push change sats push change pkh
 		len(noncePrefix) + len(o.Nonce) + // push data ownerScript
 		len(preimagePrefix) + len(preimage)) // push data preimage

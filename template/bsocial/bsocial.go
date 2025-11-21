@@ -2,7 +2,6 @@ package bsocial
 
 import (
 	"encoding/base64"
-	"fmt"
 
 	bsm "github.com/bsv-blockchain/go-sdk/compat/bsm"
 	ec "github.com/bsv-blockchain/go-sdk/primitives/ec"
@@ -43,12 +42,14 @@ type Claim struct {
 // Post represents a new piece of content
 type Post struct {
 	Action
+
 	B bitcom.B `json:"b"`
 }
 
 // Reply represents a reply to an existing post
 type Reply struct {
 	Action
+
 	B bitcom.B `json:"b"`
 }
 
@@ -75,6 +76,7 @@ type Unfollow struct {
 // Message represents a message in a channel or to a user
 type Message struct {
 	Action
+
 	B bitcom.B `json:"b"`
 }
 
@@ -153,8 +155,6 @@ func processProtocols(bc *bitcom.Bitcom, bsocial *BSocial) {
 		case bitcom.MapPrefix:
 			if m := bitcom.DecodeMap(proto.Script); m != nil {
 				processMapData(m, bsocial)
-			} else {
-				fmt.Printf("Failed to decode MAP data: %s\n", proto.Script)
 			}
 		case bitcom.BPrefix:
 			if b := bitcom.DecodeB(proto.Script); b != nil {

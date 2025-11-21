@@ -19,8 +19,8 @@ import (
 func TestLockPrefixSuffix(t *testing.T) {
 	require.NotNil(t, LockPrefix)
 	require.NotNil(t, LockSuffix)
-	require.True(t, len(LockPrefix) > 0)
-	require.True(t, len(LockSuffix) > 0)
+	require.NotEmpty(t, LockPrefix)
+	require.NotEmpty(t, LockSuffix)
 
 	// Log the lengths for diagnostic purposes
 	t.Logf("LockPrefix length: %d", len(LockPrefix))
@@ -42,7 +42,7 @@ func TestLockCreate(t *testing.T) {
 	require.NoError(t, err)
 
 	// Create a lock for 1 hour in the future
-	lockTime := uint32(time.Now().Unix()) + 3600
+	lockTime := uint32(time.Now().Unix()) + 3600 //nolint:gosec // G115: safe test value
 	lock := &Lock{
 		Address: address,
 		Until:   lockTime,
@@ -76,7 +76,7 @@ func TestLockDecode(t *testing.T) {
 	require.NoError(t, err)
 
 	// Create a lock for 1 hour in the future
-	lockTime := uint32(time.Now().Unix()) + 3600
+	lockTime := uint32(time.Now().Unix()) + 3600 //nolint:gosec // G115: safe test value
 	lock := &Lock{
 		Address: address,
 		Until:   lockTime,
@@ -110,7 +110,7 @@ func TestLockUnlocker(t *testing.T) {
 	require.NoError(t, err)
 
 	// Create a lock for 1 hour in the future
-	lockTime := uint32(time.Now().Unix()) + 3600
+	lockTime := uint32(time.Now().Unix()) + 3600 //nolint:gosec // G115: safe test value
 	lock := &Lock{
 		Address: address,
 		Until:   lockTime,
@@ -140,7 +140,7 @@ func TestLockUnlocker(t *testing.T) {
 
 	// Add an output
 	p2pkhBytes := make([]byte, 0)
-	p2pkhBytes = append(p2pkhBytes, script.OpDUP, script.OpHASH160, byte(script.OpDATA20))
+	p2pkhBytes = append(p2pkhBytes, script.OpDUP, script.OpHASH160, script.OpDATA20)
 	p2pkhBytes = append(p2pkhBytes, address.PublicKeyHash...)
 	p2pkhBytes = append(p2pkhBytes, script.OpEQUALVERIFY, script.OpCHECKSIG)
 	p2pkhScript := script.Script(p2pkhBytes)
@@ -159,7 +159,7 @@ func TestLockUnlocker(t *testing.T) {
 
 	// Estimate the unlocking script length
 	estimatedLength := unlocker.EstimateLength(tx, 0)
-	require.Greater(t, estimatedLength, uint32(0))
+	require.Positive(t, estimatedLength)
 	t.Logf("Estimated unlocking script length: %d", estimatedLength)
 
 	// Sign the transaction
@@ -184,7 +184,7 @@ func TestLockScriptFormat(t *testing.T) {
 	require.NoError(t, err)
 
 	// Create a lock for 1 hour in the future
-	lockTime := uint32(time.Now().Unix()) + 3600
+	lockTime := uint32(time.Now().Unix()) + 3600 //nolint:gosec // G115: safe test value
 	lock := &Lock{
 		Address: address,
 		Until:   lockTime,

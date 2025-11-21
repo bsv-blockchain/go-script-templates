@@ -46,7 +46,7 @@ func TestCosignLock(t *testing.T) {
 	t.Logf("Cosign script: %x", *lockScript)
 
 	// Verify we can find the expected components in the script
-	require.Equal(t, 7, len(chunks))
+	require.Len(t, chunks, 7)
 	require.Equal(t, script.OpDUP, chunks[0].Op)
 	require.Equal(t, script.OpHASH160, chunks[1].Op)
 	require.Equal(t, []byte(ownerAddress.PublicKeyHash), chunks[2].Data)
@@ -130,7 +130,7 @@ func TestCosignOwnerUnlock(t *testing.T) {
 
 	// Add an output
 	p2pkhBytes := make([]byte, 0)
-	p2pkhBytes = append(p2pkhBytes, script.OpDUP, script.OpHASH160, byte(script.OpDATA20))
+	p2pkhBytes = append(p2pkhBytes, script.OpDUP, script.OpHASH160, script.OpDATA20)
 	p2pkhBytes = append(p2pkhBytes, ownerAddress.PublicKeyHash...)
 	p2pkhBytes = append(p2pkhBytes, script.OpEQUALVERIFY, script.OpCHECKSIG)
 	p2pkhScript := script.Script(p2pkhBytes)
@@ -148,7 +148,7 @@ func TestCosignOwnerUnlock(t *testing.T) {
 
 	// Estimate the unlocking script length
 	estimatedLength := unlocker.EstimateLength(tx, 0)
-	require.Greater(t, estimatedLength, uint32(0))
+	require.Positive(t, estimatedLength)
 	t.Logf("Estimated unlocking script length: %d", estimatedLength)
 
 	// Sign the transaction
@@ -206,7 +206,7 @@ func TestCosignApproverUnlock(t *testing.T) {
 
 	// Add an output
 	p2pkhBytes := make([]byte, 0)
-	p2pkhBytes = append(p2pkhBytes, script.OpDUP, script.OpHASH160, byte(script.OpDATA20))
+	p2pkhBytes = append(p2pkhBytes, script.OpDUP, script.OpHASH160, script.OpDATA20)
 	p2pkhBytes = append(p2pkhBytes, ownerAddress.PublicKeyHash...)
 	p2pkhBytes = append(p2pkhBytes, script.OpEQUALVERIFY, script.OpCHECKSIG)
 	p2pkhScript := script.Script(p2pkhBytes)
@@ -231,7 +231,7 @@ func TestCosignApproverUnlock(t *testing.T) {
 
 	// Estimate the unlocking script length
 	estimatedLength := approverUnlocker.EstimateLength(tx, 0)
-	require.Greater(t, estimatedLength, uint32(0))
+	require.Positive(t, estimatedLength)
 	t.Logf("Estimated approver unlocking script length: %d", estimatedLength)
 
 	// Sign the transaction

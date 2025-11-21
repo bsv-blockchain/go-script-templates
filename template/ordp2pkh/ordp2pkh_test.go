@@ -439,7 +439,7 @@ func TestDecodeRealOrdinalTransaction(t *testing.T) {
 	testdataFile := filepath.Join("testdata", txID+".hex")
 
 	// Load the hex data from the file
-	hexBytes, err := os.ReadFile(testdataFile)
+	hexBytes, err := os.ReadFile(testdataFile) //nolint:gosec // G304: test file paths are controlled
 	require.NoError(t, err, "Failed to read test vector file")
 
 	// Create a transaction from the bytes
@@ -511,7 +511,7 @@ func TestRobustP2PKHExtraction(t *testing.T) {
 	testdataFile := filepath.Join("testdata", txID+".hex")
 
 	// Load the hex data from the file
-	hexBytes, err := os.ReadFile(testdataFile)
+	hexBytes, err := os.ReadFile(testdataFile) //nolint:gosec // G304: test file paths are controlled
 	require.NoError(t, err, "Failed to read test vector file")
 
 	// Create a transaction from the bytes

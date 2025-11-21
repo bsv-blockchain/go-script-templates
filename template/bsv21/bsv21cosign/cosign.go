@@ -9,6 +9,7 @@ package bsv21cosign
 import (
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"strconv"
 
 	ec "github.com/bsv-blockchain/go-sdk/primitives/ec"
@@ -20,6 +21,9 @@ import (
 	"github.com/bsv-blockchain/go-script-templates/template/cosign"
 	"github.com/bsv-blockchain/go-script-templates/template/inscription"
 )
+
+// ErrMissingTokenOrCosign is returned when attempting to lock without a Token or Cosign
+var ErrMissingTokenOrCosign = errors.New("missing token or cosign data")
 
 // OrdCosign represents a BSV21 token with a Cosign locking script
 type OrdCosign struct {
@@ -198,7 +202,7 @@ func Decode(s *script.Script) *OrdCosign {
 func (oc *OrdCosign) Lock(approverPubKey *ec.PublicKey) (*script.Script, error) {
 	// Check if we have a Token and a Cosign
 	if oc.Token == nil || oc.Cosign == nil {
-		return nil, nil
+		return nil, ErrMissingTokenOrCosign
 	}
 
 	// Get the address from the Cosign data

@@ -227,4 +227,4 @@ const (
 
 ## Note
 
-The BSocial template is designed to be compliant with BitcoinSchema.org standards. By following these standards, you ensure compatibility with other applications in the Bitcoin SV ecosystem that also adhere to BitcoinSchema.org protocols. 
+The BSocial template is designed to be compliant with BitcoinSchema.org standards. By following these standards, you ensure compatibility with other applications in the Bitcoin SV ecosystem that also adhere to BitcoinSchema.org protocols.

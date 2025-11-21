@@ -76,7 +76,7 @@ func TestDecodePOW20Integration(t *testing.T) {
 		}
 	}
 
-	// NOTE: We may not find POW20 data if this is just a BSV-20 JSON contract definition
+	// We may not find POW20 data if this is just a BSV-20 JSON contract definition
 	// and not the actual POW20 contract structure
 	if pow20Data != nil {
 		symbol := ""

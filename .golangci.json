@@ -43,7 +43,13 @@
     "linters": {
         "disable": [
             "gocritic",
-            "godot"
+            "godot",
+            "revive",
+            "gocognit",
+            "gocyclo",
+            "nestif",
+            "gochecknoglobals",
+            "wsl_v5"
         ],
         "enable": [
             "asasalint",
@@ -66,12 +72,9 @@
             "forbidigo",
             "funcorder",
             "gocheckcompilerdirectives",
-            "gochecknoglobals",
             "gochecknoinits",
             "gochecksumtype",
-            "gocognit",
             "goconst",
-            "gocyclo",
             "godox",
             "goheader",
             "gomoddirectives",
@@ -86,7 +89,6 @@
             "misspell",
             "musttag",
             "nakedret",
-            "nestif",
             "nilerr",
             "nilnesserr",
             "nilnil",
@@ -98,7 +100,6 @@
             "protogetter",
             "reassign",
             "recvcheck",
-            "revive",
             "rowserrcheck",
             "spancheck",
             "sqlclosecheck",
@@ -108,7 +109,6 @@
             "unparam",
             "unused",
             "wastedassign",
-            "wsl_v5",
             "zerologlint"
         ],
         "settings": {

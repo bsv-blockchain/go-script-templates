@@ -53,7 +53,7 @@ func DecodeBAP(b *Bitcom) *Bap {
 		if proto.Protocol == BAPPrefix {
 			// Create a BAP struct to hold the decoded data
 			bap := &Bap{
-				BitcomIndex: uint(ii),
+				BitcomIndex: uint(ii), //nolint:gosec // G115: safe conversion
 			}
 
 			// Parse script into chunks for analysis
