@@ -6,13 +6,14 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/bitcoin-sv/go-templates/template/bitcom"
-	"github.com/bitcoin-sv/go-templates/template/inscription"
-	"github.com/bitcoin-sv/go-templates/template/p2pkh"
 	ec "github.com/bsv-blockchain/go-sdk/primitives/ec"
 	"github.com/bsv-blockchain/go-sdk/script"
 	"github.com/bsv-blockchain/go-sdk/transaction"
 	"github.com/stretchr/testify/require"
+
+	"github.com/bsv-blockchain/go-script-templates/template/bitcom"
+	"github.com/bsv-blockchain/go-script-templates/template/inscription"
+	"github.com/bsv-blockchain/go-script-templates/template/p2pkh"
 )
 
 // TestOrdP2PKHDecode verifies that the Decode function properly identifies scripts
@@ -438,7 +439,7 @@ func TestDecodeRealOrdinalTransaction(t *testing.T) {
 	testdataFile := filepath.Join("testdata", txID+".hex")
 
 	// Load the hex data from the file
-	hexBytes, err := os.ReadFile(testdataFile)
+	hexBytes, err := os.ReadFile(testdataFile) //nolint:gosec // G304: test file paths are controlled
 	require.NoError(t, err, "Failed to read test vector file")
 
 	// Create a transaction from the bytes
@@ -510,7 +511,7 @@ func TestRobustP2PKHExtraction(t *testing.T) {
 	testdataFile := filepath.Join("testdata", txID+".hex")
 
 	// Load the hex data from the file
-	hexBytes, err := os.ReadFile(testdataFile)
+	hexBytes, err := os.ReadFile(testdataFile) //nolint:gosec // G304: test file paths are controlled
 	require.NoError(t, err, "Failed to read test vector file")
 
 	// Create a transaction from the bytes

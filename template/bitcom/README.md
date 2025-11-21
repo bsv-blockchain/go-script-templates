@@ -9,7 +9,7 @@ This template provides Go implementations of Bitcoin BitCom protocols:
 ## Installation
 
 ```bash
-go get github.com/bitcoin-sv/go-templates/template/bitcom
+go get github.com/bsv-blockchain/go-script-templates/template/bitcom
 ```
 
 ## Available Protocols
@@ -19,7 +19,7 @@ go get github.com/bitcoin-sv/go-templates/template/bitcom
 The B protocol allows attaching binary data or content to Bitcoin transactions.
 
 ```go
-import "github.com/bitcoin-sv/go-templates/template/bitcom"
+import "github.com/bsv-blockchain/go-script-templates/template/bitcom"
 
 // Create a B data structure
 bData := bitcom.B{
@@ -44,7 +44,7 @@ if decodedB != nil {
 The Magic Attribute Protocol (MAP) allows storing structured key-value data.
 
 ```go
-import "github.com/bitcoin-sv/go-templates/template/bitcom"
+import "github.com/bsv-blockchain/go-script-templates/template/bitcom"
 
 // Decode MAP data from a script
 s := &script.Script{} // Assuming this is a script containing MAP data
@@ -72,7 +72,7 @@ The Author Identity Protocol (AIP) allows signing data with an identity.
 
 ```go
 import (
-    "github.com/bitcoin-sv/go-templates/template/bitcom"
+    "github.com/bsv-blockchain/go-script-templates/template/bitcom"
     ec "github.com/bsv-blockchain/go-sdk/primitives/ec"
 )
 
@@ -100,7 +100,7 @@ aipData := bitcom.DecodeAIP(bc)
 
 ```go
 import (
-    "github.com/bitcoin-sv/go-templates/template/bitcom"
+    "github.com/bsv-blockchain/go-script-templates/template/bitcom"
     "github.com/bsv-blockchain/go-sdk/script"
 )
 
@@ -185,4 +185,4 @@ const (
 - [BitcoinSchema.org](https://bitcoinschema.org/) - Standards for on-chain data formats
 - [go-map](https://github.com/BitcoinSchema/go-map) - Go implementation of MAP
 - [go-aip](https://github.com/BitcoinSchema/go-aip) - Go implementation of AIP
-- [go-b](https://github.com/BitcoinSchema/go-b) - Go implementation of B 
+- [go-b](https://github.com/BitcoinSchema/go-b) - Go implementation of B

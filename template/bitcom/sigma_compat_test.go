@@ -81,10 +81,7 @@ func TestCompareWithGoSigma(t *testing.T) {
 
 	// For testing compatibility, we'll check if we can successfully decode
 	// a SIGMA prefix created in the go-sigma style
-	goSignedTx, err := createGoSigmaSignedTx(t)
-	if err != nil {
-		t.Fatalf("Error creating go-sigma signed transaction: %v", err)
-	}
+	goSignedTx := createGoSigmaSignedTx(t)
 
 	// Decode with our implementation
 	ourSigs := DecodeFromTransaction(goSignedTx)
@@ -205,8 +202,7 @@ func TestGoSigmaHashingDetails(t *testing.T) {
 }
 
 // Helper function to create a transaction signed with go-sigma
-// This could fail in environments without a private key, so we handle the error
-func createGoSigmaSignedTx(t *testing.T) (*transaction.Transaction, error) {
+func createGoSigmaSignedTx(t *testing.T) *transaction.Transaction {
 	t.Log("Note: Cannot create a real signed transaction without a private key")
 	t.Log("Creating transaction with empty signature for structure testing only")
 
@@ -255,5 +251,5 @@ func createGoSigmaSignedTx(t *testing.T) (*transaction.Transaction, error) {
 		Satoshis:      0,
 	})
 
-	return tx, nil
+	return tx
 }

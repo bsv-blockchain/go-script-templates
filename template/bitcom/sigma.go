@@ -6,11 +6,22 @@ package bitcom
 import (
 	"crypto/sha256"
 	"encoding/base64"
+	"encoding/binary"
+	"errors"
 	"fmt"
 
 	bsm "github.com/bsv-blockchain/go-sdk/compat/bsm"
 	"github.com/bsv-blockchain/go-sdk/script"
 	"github.com/bsv-blockchain/go-sdk/transaction"
+)
+
+// Error definitions for sigma verification
+var (
+	ErrInsufficientData              = errors.New("insufficient data for verification")
+	ErrMissingMessageData            = errors.New("missing required data for message signature verification")
+	ErrMissingTransactionData        = errors.New("missing required data for transaction signature verification")
+	ErrFailedToGenerateMessageHash   = errors.New("failed to generate message hash from transaction")
+	ErrUnsupportedSignatureAlgorithm = errors.New("unsupported signature algorithm")
 )
 
 // SIGMAPrefix is another recognized prefix in some implementations
@@ -56,13 +67,7 @@ func DecodeSIGMA(b *Bitcom) []*Sigma {
 		return signatures
 	}
 
-	for i, proto := range b.Protocols {
-		// Debug
-		fmt.Printf("Protocol %d: %q, Script length: %d\n", i, proto.Protocol, len(proto.Script))
-		fmt.Printf("SIGMAPrefix: %q\n", SIGMAPrefix)
-		fmt.Printf("proto.Protocol == SIGMAPrefix: %v\n", proto.Protocol == SIGMAPrefix)
-		fmt.Printf("Script hex: %x\n", proto.Script)
-
+	for _, proto := range b.Protocols {
 		// Check for SIGMA prefix
 		if proto.Protocol == SIGMAPrefix {
 			pos := 0 // Start from beginning of script
@@ -70,12 +75,8 @@ func DecodeSIGMA(b *Bitcom) []*Sigma {
 
 			sigma := &Sigma{}
 
-			// Debug
-			fmt.Printf("Reading data from script...\n")
-
 			// Read ALGORITHM - handle the case where it's prefixed with length
 			if op, err := scr.ReadOp(&pos); err != nil {
-				fmt.Printf("Error reading algorithm: %v\n", err)
 				continue
 			} else {
 				// The algorithm field is prefixed with its length (03) for "BSM"
@@ -84,12 +85,10 @@ func DecodeSIGMA(b *Bitcom) []*Sigma {
 				} else {
 					sigma.Algorithm = SignatureAlgorithm(string(op.Data))
 				}
-				fmt.Printf("Algorithm: %q\n", sigma.Algorithm)
 			}
 
 			// Read SIGNER ADDRESS - handle the case where it's prefixed with quotes
 			if op, err := scr.ReadOp(&pos); err != nil {
-				fmt.Printf("Error reading signer address: %v\n", err)
 				continue
 			} else {
 				if len(op.Data) > 1 && op.Data[0] == '"' {
@@ -98,17 +97,14 @@ func DecodeSIGMA(b *Bitcom) []*Sigma {
 				} else {
 					sigma.SignerAddress = string(op.Data)
 				}
-				fmt.Printf("SignerAddress: %q\n", sigma.SignerAddress)
 			}
 
 			// Read SIGNATURE VALUE
 			if op, err := scr.ReadOp(&pos); err != nil {
-				fmt.Printf("Error reading signature value: %v\n", err)
 				continue
 			} else {
 				// Base64 encode the signature value
 				sigma.SignatureValue = base64.StdEncoding.EncodeToString(op.Data)
-				fmt.Printf("SignatureValue: %s\n", sigma.SignatureValue)
 			}
 
 			// Try to read optional fields
@@ -116,16 +112,13 @@ func DecodeSIGMA(b *Bitcom) []*Sigma {
 				// Check if this is VIN field (numeric value)
 				if len(op.Data) == 1 && op.Data[0] >= '0' && op.Data[0] <= '9' {
 					sigma.VIN = int(op.Data[0] - '0')
-					fmt.Printf("VIN: %d\n", sigma.VIN)
 				} else {
 					// This is probably a message field
 					sigma.Message = string(op.Data)
-					fmt.Printf("Message: %q\n", sigma.Message)
 
 					// Try to read nonce if it exists
 					if op, err := scr.ReadOp(&pos); err == nil {
 						sigma.Nonce = string(op.Data)
-						fmt.Printf("Nonce: %q\n", sigma.Nonce)
 					}
 				}
 			}
@@ -134,25 +127,19 @@ func DecodeSIGMA(b *Bitcom) []*Sigma {
 			if sigma.SignerAddress != "" && sigma.SignatureValue != "" {
 				// For signatures with explicit message field
 				if sigma.Message != "" {
-					if err := sigma.VerifyMessageSignature(); err != nil {
-						fmt.Printf("Failed to verify message signature: %v\n", err)
-					}
+					_ = sigma.VerifyMessageSignature()
 				} else if sigma.Transaction != nil {
 					// For transaction signatures, we need to derive the message from transaction data
-					if err := sigma.VerifyTransactionSignature(); err != nil {
-						fmt.Printf("Failed to verify transaction signature: %v\n", err)
-					}
+					_ = sigma.VerifyTransactionSignature()
 				} else {
 					// For now, just trust signatures without enough context to verify
 					sigma.Valid = true
 				}
 			}
 
-			fmt.Printf("Adding sigma to result\n")
 			signatures = append(signatures, sigma)
 		}
 	}
-	fmt.Printf("Returning %d signatures\n", len(signatures))
 	return signatures
 }
 
@@ -178,14 +165,14 @@ func (s *Sigma) Verify() error {
 	} else if s.Transaction != nil {
 		return s.VerifyTransactionSignature()
 	}
-	return fmt.Errorf("insufficient data for verification")
+	return ErrInsufficientData
 }
 
 // VerifyMessageSignature validates a Sigma signature against a simple message
 func (s *Sigma) VerifyMessageSignature() error {
 	// Check if we have the necessary data to verify
 	if s.SignerAddress == "" || s.SignatureValue == "" || s.Message == "" {
-		return fmt.Errorf("missing required data for message signature verification")
+		return ErrMissingMessageData
 	}
 
 	// Get signature bytes
@@ -221,7 +208,7 @@ func (s *Sigma) VerifyMessageSignature() error {
 			return fmt.Errorf("ECDSA verification failed: %w", err)
 		}
 	default:
-		return fmt.Errorf("unsupported signature algorithm: %s", s.Algorithm)
+		return fmt.Errorf("%w: %s", ErrUnsupportedSignatureAlgorithm, s.Algorithm)
 	}
 }
 
@@ -230,7 +217,7 @@ func (s *Sigma) VerifyMessageSignature() error {
 func (s *Sigma) VerifyTransactionSignature() error {
 	// Check if we have the necessary data to verify
 	if s.SignerAddress == "" || s.SignatureValue == "" || s.Transaction == nil {
-		return fmt.Errorf("missing required data for transaction signature verification")
+		return ErrMissingTransactionData
 	}
 
 	// Get signature bytes
@@ -242,7 +229,7 @@ func (s *Sigma) VerifyTransactionSignature() error {
 	// Construct message hash from transaction data according to Sigma protocol
 	msgHash := s.getMessageHash()
 	if msgHash == nil {
-		return fmt.Errorf("failed to generate message hash from transaction")
+		return ErrFailedToGenerateMessageHash
 	}
 
 	// Verify using different methods based on the algorithm
@@ -264,7 +251,7 @@ func (s *Sigma) VerifyTransactionSignature() error {
 			return fmt.Errorf("ECDSA verification failed for transaction: %w", err)
 		}
 	default:
-		return fmt.Errorf("unsupported signature algorithm: %s", s.Algorithm)
+		return fmt.Errorf("%w: %s", ErrUnsupportedSignatureAlgorithm, s.Algorithm)
 	}
 }
 
@@ -289,12 +276,9 @@ func (s *Sigma) getInputHash() []byte {
 	// Create outpoint bytes (txid + vout in little-endian)
 	txidBytes := input.SourceTXID.CloneBytes() // Already in correct order
 
-	// Add vout as 4 bytes (little-endian)
+	// Add vout as 4 bytes (little-endian) using binary.LittleEndian for safe conversion
 	voutBytes := make([]byte, 4)
-	voutBytes[0] = byte(input.SourceTxOutIndex)
-	voutBytes[1] = byte(input.SourceTxOutIndex >> 8)
-	voutBytes[2] = byte(input.SourceTxOutIndex >> 16)
-	voutBytes[3] = byte(input.SourceTxOutIndex >> 24)
+	binary.LittleEndian.PutUint32(voutBytes, input.SourceTxOutIndex)
 
 	// Combine into outpoint
 	outpointBytes := append(txidBytes, voutBytes...)
@@ -418,9 +402,7 @@ func DecodeFromTransaction(tx *transaction.Transaction) []*Sigma {
 			sigma.SigmaInstance = instanceIdx
 
 			// Verify with transaction context
-			if err := sigma.VerifyTransactionSignature(); err != nil {
-				fmt.Printf("Failed to verify transaction signature: %v\n", err)
-			}
+			_ = sigma.VerifyTransactionSignature()
 		}
 
 		allSignatures = append(allSignatures, signatures...)

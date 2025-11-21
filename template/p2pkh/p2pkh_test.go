@@ -135,7 +135,7 @@ func TestDecode_ValidAndInvalid(t *testing.T) {
 	require.NoError(t, err)
 	addr := Decode(s, true)
 	require.NotNil(t, addr)
-	require.Equal(t, 20, len(addr.PublicKeyHash))
+	require.Len(t, addr.PublicKeyHash, 20)
 
 	// Invalid script (not 25 bytes)
 	invalidScript := script.Script([]byte{0x00, 0x01, 0x02})

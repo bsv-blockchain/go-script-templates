@@ -9,16 +9,21 @@ package bsv21cosign
 import (
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"strconv"
 
-	"github.com/bitcoin-sv/go-templates/template/bsv21"
-	"github.com/bitcoin-sv/go-templates/template/cosign"
-	"github.com/bitcoin-sv/go-templates/template/inscription"
 	ec "github.com/bsv-blockchain/go-sdk/primitives/ec"
 	"github.com/bsv-blockchain/go-sdk/script"
 	"github.com/bsv-blockchain/go-sdk/transaction"
 	sighash "github.com/bsv-blockchain/go-sdk/transaction/sighash"
+
+	"github.com/bsv-blockchain/go-script-templates/template/bsv21"
+	"github.com/bsv-blockchain/go-script-templates/template/cosign"
+	"github.com/bsv-blockchain/go-script-templates/template/inscription"
 )
+
+// ErrMissingTokenOrCosign is returned when attempting to lock without a Token or Cosign
+var ErrMissingTokenOrCosign = errors.New("missing token or cosign data")
 
 // OrdCosign represents a BSV21 token with a Cosign locking script
 type OrdCosign struct {
@@ -197,7 +202,7 @@ func Decode(s *script.Script) *OrdCosign {
 func (oc *OrdCosign) Lock(approverPubKey *ec.PublicKey) (*script.Script, error) {
 	// Check if we have a Token and a Cosign
 	if oc.Token == nil || oc.Cosign == nil {
-		return nil, nil
+		return nil, ErrMissingTokenOrCosign
 	}
 
 	// Get the address from the Cosign data
@@ -277,7 +282,7 @@ func (oc *OrdCosign) ApproverUnlock(key *ec.PrivateKey, userScript *script.Scrip
 }
 
 // ToUnlocker creates a transaction input unlocker for this OrdCosign
-func (oc *OrdCosign) ToUnlocker(ownerKey *ec.PrivateKey, approverKey *ec.PrivateKey, sigHashFlag *sighash.Flag) (*OrdCosignUnlocker, error) {
+func (oc *OrdCosign) ToUnlocker(ownerKey, approverKey *ec.PrivateKey, sigHashFlag *sighash.Flag) (*OrdCosignUnlocker, error) {
 	if sigHashFlag == nil {
 		shf := sighash.AllForkID
 		sigHashFlag = &shf

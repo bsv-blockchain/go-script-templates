@@ -76,6 +76,6 @@ func (lu LockUnlocker) EstimateLength(tx *transaction.Transaction, inputIndex ui
 	if u, err := lu.Sign(tx, inputIndex); err != nil {
 		return 0
 	} else {
-		return uint32(len(*u))
+		return uint32(len(*u)) //nolint:gosec // G115: len() always returns non-negative
 	}
 }

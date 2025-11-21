@@ -31,7 +31,7 @@ func loadTestVectors(t *testing.T, filePath string) TestVectors {
 	t.Helper()
 
 	// Read test vectors file
-	data, err := os.ReadFile(filePath)
+	data, err := os.ReadFile(filePath) //nolint:gosec // G304: test file paths are controlled
 	require.NoError(t, err, "Failed to read test vectors file: %s", filePath)
 
 	// Parse test vectors
@@ -60,7 +60,7 @@ func getTransactionFromVector(t *testing.T, vector TestVector) *transaction.Tran
 	t.Logf("Attempting to read transaction from file: %s", filePath)
 
 	// Read the file
-	data, err := os.ReadFile(filePath)
+	data, err := os.ReadFile(filePath) //nolint:gosec // G304: test file paths are controlled
 	if err != nil {
 		t.Logf("Failed to read transaction file '%s': %v", filePath, err)
 		return nil
@@ -115,7 +115,7 @@ func TestDecodeB(t *testing.T) {
 				}
 
 				// First find the OP_RETURN
-				pos := findReturn(output.LockingScript, 0)
+				pos := findReturn(output.LockingScript)
 				if pos == -1 {
 					continue
 				}

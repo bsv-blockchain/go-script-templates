@@ -120,7 +120,7 @@ func TestDecodeMap(t *testing.T) {
 		if result != nil {
 			require.Equal(t, MapCmdSet, result.Cmd)
 			require.Empty(t, result.Data["key2"])
-			require.Equal(t, 0, len(result.Data))
+			require.Empty(t, result.Data)
 		}
 	})
 }

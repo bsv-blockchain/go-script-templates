@@ -1,6 +1,7 @@
 package bitcom
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -13,15 +14,21 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+// ErrNilOutput is returned when the transaction output or locking script is nil
+var ErrNilOutput = errors.New("nil output or locking script")
+
+// ErrNoBitcomProtocols is returned when no Bitcom protocols are found
+var ErrNoBitcomProtocols = errors.New("no bitcom protocols found")
+
 // DecodeFromOutput extracts Bitcom data from a transaction output
 func DecodeFromOutput(output *transaction.TransactionOutput) (*Bitcom, error) {
 	if output == nil || output.LockingScript == nil {
-		return nil, nil
+		return nil, ErrNilOutput
 	}
 
 	bitcom := Decode(output.LockingScript)
 	if bitcom == nil || len(bitcom.Protocols) == 0 {
-		return nil, nil
+		return nil, ErrNoBitcomProtocols
 	}
 
 	return bitcom, nil
@@ -32,7 +39,7 @@ func TestDecodeBAP(t *testing.T) {
 	txID := "c2f0f5f503c012737a8ee0dfa2ae40f52177338fd746afccdd992b0e165af6f9"
 	testdataFile := filepath.Join("testdata", txID+".hex")
 
-	hexBytes, err := os.ReadFile(testdataFile)
+	hexBytes, err := os.ReadFile(testdataFile) //nolint:gosec // G304: test file paths are controlled
 	if err != nil {
 		t.Fatalf("Failed to read test vector file: %v", err)
 	}
@@ -211,9 +218,9 @@ func TestCreateBAP(t *testing.T) {
 				continue
 			}
 
-			chunks, err := scr.Chunks()
-			if err != nil {
-				t.Logf("Failed to parse chunks: %v", err)
+			chunks, chunkErr := scr.Chunks()
+			if chunkErr != nil {
+				t.Logf("Failed to parse chunks: %v", chunkErr)
 				continue
 			}
 
@@ -317,5 +324,5 @@ func TestCreateBAP(t *testing.T) {
 	// Verify the decoded BAP ATTEST data
 	assert.Equal(t, ATTEST, attestBap.Type)
 	assert.Equal(t, txid, attestBap.IDKey)
-	assert.Equal(t, uint64(seqNum), attestBap.Sequence)
+	assert.Equal(t, uint64(seqNum), attestBap.Sequence) //nolint:gosec // G115: safe test value
 }

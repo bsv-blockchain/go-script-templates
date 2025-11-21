@@ -6,12 +6,13 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/bitcoin-sv/go-templates/template/inscription"
 	ec "github.com/bsv-blockchain/go-sdk/primitives/ec"
 	"github.com/bsv-blockchain/go-sdk/script"
 	"github.com/bsv-blockchain/go-sdk/transaction"
 	"github.com/bsv-blockchain/go-sdk/transaction/template/p2pkh"
 	"github.com/stretchr/testify/require"
+
+	"github.com/bsv-blockchain/go-script-templates/template/inscription"
 )
 
 // TestDecodeLTMFromTestVector tests decoding a Lock-to-Mint (LTM) contract from a test vector
@@ -99,10 +100,10 @@ func TestDecodeLTMFromTestVector(t *testing.T) {
 
 		// Add specific assertions for the expected LTM fields
 		require.Equal(t, "TEST", ltmData.Symbol, "Symbol should be TEST")
-		require.Greater(t, ltmData.Max, uint64(0), "Max should be greater than 0")
-		require.Greater(t, ltmData.Decimals, uint8(0), "Decimals should be greater than 0")
-		require.Greater(t, ltmData.Multiplier, uint64(0), "Multiplier should be greater than 0")
-		require.Greater(t, ltmData.LockDuration, uint64(0), "LockDuration should be greater than 0")
+		require.Positive(t, ltmData.Max, "Max should be greater than 0")
+		require.Positive(t, ltmData.Decimals, "Decimals should be greater than 0")
+		require.Positive(t, ltmData.Multiplier, "Multiplier should be greater than 0")
+		require.Positive(t, ltmData.LockDuration, "LockDuration should be greater than 0")
 	} else if ltmJsonData != nil {
 		// Verify the JSON fields match our expectations
 		require.Equal(t, "bsv-20", ltmJsonData["p"], "Protocol should be bsv-20")
@@ -261,8 +262,8 @@ func TestCreateLTMTransaction(t *testing.T) {
 	})
 
 	// Verify the transaction was created correctly
-	require.Equal(t, 1, len(tx.Inputs), "Transaction should have 1 input")
-	require.Equal(t, 2, len(tx.Outputs), "Transaction should have 2 outputs")
+	require.Len(t, tx.Inputs, 1, "Transaction should have 1 input")
+	require.Len(t, tx.Outputs, 2, "Transaction should have 2 outputs")
 
 	// Verify we can decode the inscription from the output
 	decodedInsc := inscription.Decode(tx.Outputs[0].LockingScript)
@@ -330,7 +331,7 @@ func TestDecode_DecimalsEdgeCases(t *testing.T) {
 		{0x03}, // LockDuration
 		{0x04}, // StartHeight
 	}
-	scriptBytes := append([]byte("LTM_PREFIX"))
+	scriptBytes := []byte("LTM_PREFIX")
 	for i, chunk := range chunks {
 		if i == 2 {
 			scriptBytes = append(scriptBytes, 0x52) // Op2
@@ -364,7 +365,7 @@ func TestDecode_DecimalsAsData(t *testing.T) {
 		{0x03}, // LockDuration
 		{0x04}, // StartHeight
 	}
-	scriptBytes := append([]byte("LTM_PREFIX"))
+	scriptBytes := []byte("LTM_PREFIX")
 	for _, chunk := range chunks {
 		scriptBytes = append(scriptBytes, byte(len(chunk)))
 		scriptBytes = append(scriptBytes, chunk...)

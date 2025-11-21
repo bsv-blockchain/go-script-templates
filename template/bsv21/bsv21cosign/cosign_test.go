@@ -7,14 +7,15 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/bitcoin-sv/go-templates/template/bsv21"
-	"github.com/bitcoin-sv/go-templates/template/inscription"
-	"github.com/bitcoin-sv/go-templates/template/p2pkh"
 	"github.com/bsv-blockchain/go-sdk/chainhash"
 	ec "github.com/bsv-blockchain/go-sdk/primitives/ec"
 	"github.com/bsv-blockchain/go-sdk/script"
 	"github.com/bsv-blockchain/go-sdk/transaction"
 	"github.com/stretchr/testify/require"
+
+	"github.com/bsv-blockchain/go-script-templates/template/bsv21"
+	"github.com/bsv-blockchain/go-script-templates/template/inscription"
+	"github.com/bsv-blockchain/go-script-templates/template/p2pkh"
 )
 
 func TestOrdCosignCreateAndDecode(t *testing.T) {
@@ -91,8 +92,8 @@ func TestOrdCosignCreateAndDecode(t *testing.T) {
 
 			// Try to manually unmarshal the content
 			var data map[string]interface{}
-			if err := json.Unmarshal(insc.File.Content, &data); err != nil {
-				t.Logf("  Failed to unmarshal content: %v", err)
+			if unmarshalErr := json.Unmarshal(insc.File.Content, &data); unmarshalErr != nil {
+				t.Logf("  Failed to unmarshal content: %v", unmarshalErr)
 			} else {
 				t.Logf("  Content parsed as JSON: %+v", data)
 
@@ -108,7 +109,8 @@ func TestOrdCosignCreateAndDecode(t *testing.T) {
 		}
 
 		// Try creating a standalone inscription with the same data
-		bsv21JSON, _ := json.Marshal(bsv21Token)
+		bsv21JSON, marshalErr := json.Marshal(bsv21Token)
+		require.NoError(t, marshalErr)
 		testInsc := &inscription.Inscription{
 			File: inscription.File{
 				Content: bsv21JSON,
@@ -117,8 +119,8 @@ func TestOrdCosignCreateAndDecode(t *testing.T) {
 		}
 
 		// Lock it to a script
-		testScript, err := testInsc.Lock()
-		require.NoError(t, err)
+		testScript, lockErr := testInsc.Lock()
+		require.NoError(t, lockErr)
 
 		// Try to decode it
 		testToken := bsv21.Decode(testScript)
@@ -269,7 +271,7 @@ func TestDecodeMNEEToken(t *testing.T) {
 
 	// Try to decode each output as a BSV21Cosign
 	var ordCosign *OrdCosign
-	var foundOutput int = -1
+	foundOutput := -1
 
 	for i, output := range tx.Outputs {
 		t.Logf("Checking output %d with %d satoshis", i, output.Satoshis)

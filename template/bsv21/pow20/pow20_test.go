@@ -6,11 +6,12 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/bitcoin-sv/go-templates/template/bsv21"
-	"github.com/bitcoin-sv/go-templates/template/inscription"
 	"github.com/bsv-blockchain/go-sdk/script"
 	"github.com/bsv-blockchain/go-sdk/transaction"
 	"github.com/stretchr/testify/require"
+
+	"github.com/bsv-blockchain/go-script-templates/template/bsv21"
+	"github.com/bsv-blockchain/go-script-templates/template/inscription"
 )
 
 // TestDecodePOW20FromTestVector tests decoding a POW20 contract from a test vector
@@ -224,5 +225,5 @@ func TestEstimateLength_Basic(t *testing.T) {
 	tx := transaction.NewTransaction()
 	tx.AddInput(&transaction.TransactionInput{})
 	length := unlock.EstimateLength(tx, 0)
-	require.Greater(t, length, uint32(0))
+	require.Positive(t, length)
 }

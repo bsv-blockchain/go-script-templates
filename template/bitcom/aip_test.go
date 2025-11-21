@@ -1,7 +1,6 @@
 package bitcom
 
 import (
-	"fmt"
 	"os"
 	"strings"
 	"testing"
@@ -196,7 +195,7 @@ func TestDecodeAIP(t *testing.T) {
 				t.Logf("Result: %+v", result)
 			}
 
-			require.Equal(t, len(tt.expected), len(result))
+			require.Len(t, result, len(tt.expected))
 
 			if len(tt.expected) > 0 {
 				for i, expectedAIP := range tt.expected {
@@ -210,7 +209,7 @@ func TestDecodeAIP(t *testing.T) {
 					require.Equal(t, expectedAIP.Address, resultAIP.Address)
 					require.Equal(t, expectedAIP.Signature, resultAIP.Signature)
 
-					require.Equal(t, len(expectedAIP.FieldIndexes), len(resultAIP.FieldIndexes))
+					require.Len(t, resultAIP.FieldIndexes, len(expectedAIP.FieldIndexes))
 					for j, expectedIndex := range expectedAIP.FieldIndexes {
 						if j >= len(resultAIP.FieldIndexes) {
 							t.Fatalf("Missing expected field index at position %d", j)
@@ -243,8 +242,8 @@ func TestDecodeAIPFromTestVector(t *testing.T) {
 	t.Logf("Transaction has %d inputs and %d outputs", len(tx.Inputs), len(tx.Outputs))
 
 	// Verify structure of the transaction
-	require.Equal(t, 2, len(tx.Outputs), "Transaction should have 2 outputs")
-	require.Equal(t, 1, len(tx.Inputs), "Transaction should have 1 input")
+	require.Len(t, tx.Outputs, 2, "Transaction should have 2 outputs")
+	require.Len(t, tx.Inputs, 1, "Transaction should have 1 input")
 
 	// Check the first output for OP_RETURN and BitCom data
 	firstOutput := tx.Outputs[0]
@@ -300,27 +299,27 @@ func TestDecodeAIPFromTestVector(t *testing.T) {
 	t.Logf("DecodeAIP found %d AIP instances", len(aips))
 
 	// We should find 2 AIP instances in this transaction
-	require.Equal(t, 2, len(aips), "Should decode 2 AIP instances from the transaction")
+	require.Len(t, aips, 2, "Should decode 2 AIP instances from the transaction")
 
 	// Validate first AIP
-	require.Greater(t, len(aips), 0, "Should find at least one AIP instance")
+	require.NotEmpty(t, aips, "Should find at least one AIP instance")
 
-	fmt.Println("AIP 1:")
-	fmt.Println("  Algorithm:", aips[0].Algorithm)
-	fmt.Println("  Address:", aips[0].Address)
-	fmt.Println("  Signature length:", len(aips[0].Signature), "bytes")
+	t.Log("AIP 1:")
+	t.Log("  Algorithm:", aips[0].Algorithm)
+	t.Log("  Address:", aips[0].Address)
+	t.Log("  Signature length:", len(aips[0].Signature), "bytes")
 
 	require.Equal(t, "BITCOIN_ECDSA", aips[0].Algorithm, "AIP 1 should have BITCOIN_ECDSA algorithm")
 	require.Equal(t, "1EXhSbGFiEAZCE5eeBvUxT6cBVHhrpPWXz", aips[0].Address, "AIP 1 should have expected address")
 	require.NotEmpty(t, aips[0].Signature, "AIP 1 should have signature")
 
 	// Validate second AIP
-	require.Equal(t, 2, len(aips), "Should find 2 AIP instances")
+	require.Len(t, aips, 2, "Should find 2 AIP instances")
 
-	fmt.Println("AIP 2:")
-	fmt.Println("  Algorithm:", aips[1].Algorithm)
-	fmt.Println("  Address:", aips[1].Address)
-	fmt.Println("  Signature length:", len(aips[1].Signature), "bytes")
+	t.Log("AIP 2:")
+	t.Log("  Algorithm:", aips[1].Algorithm)
+	t.Log("  Address:", aips[1].Address)
+	t.Log("  Signature length:", len(aips[1].Signature), "bytes")
 
 	require.Equal(t, "BITCOIN_ECDSA", aips[1].Algorithm, "AIP 2 should have BITCOIN_ECDSA algorithm")
 	require.Equal(t, "19nknLhRnGKRR3hobeFuuqmHUMiNTKZHsR", aips[1].Address, "AIP 2 should have expected address")
@@ -347,28 +346,28 @@ func TestDecodeAIPBasic(t *testing.T) {
 	}
 
 	// Verify mockBitcom has an AIP protocol
-	require.Equal(t, 1, len(mockBitcom.Protocols), "Should have 1 protocol")
+	require.Len(t, mockBitcom.Protocols, 1, "Should have 1 protocol")
 	require.Equal(t, AIPPrefix, mockBitcom.Protocols[0].Protocol, "Protocol should be AIP")
 
 	// Verify AIP script structure
-	script := mockBitcom.Protocols[0].Script
-	require.NotNil(t, script, "Script should not be nil")
-	require.True(t, len(script) >= 14, "Script should contain at least the algorithm")
+	scr := mockBitcom.Protocols[0].Script
+	require.NotNil(t, scr, "Script should not be nil")
+	require.GreaterOrEqual(t, len(scr), 14, "Script should contain at least the algorithm")
 
-	fmt.Println("Protocol in TestDecodeAIPBasic:")
-	fmt.Println("  Protocol:", mockBitcom.Protocols[0].Protocol)
-	fmt.Printf("  Script (length %d): %x\n", len(script), script)
+	t.Log("Protocol in TestDecodeAIPBasic:")
+	t.Log("  Protocol:", mockBitcom.Protocols[0].Protocol)
+	t.Logf("  Script (length %d): %x", len(scr), scr)
 
 	// Verify algorithm prefix
 	expected := []byte{0x0d, 0x42, 0x49, 0x54, 0x43, 0x4f, 0x49, 0x4e, 0x5f, 0x45, 0x43, 0x44, 0x53, 0x41}
 	for i, b := range expected {
-		require.Equal(t, b, script[i], "Byte %d of algorithm should match", i)
+		require.Equal(t, b, scr[i], "Byte %d of algorithm should match", i)
 	}
 
 	// Now that the DecodeAIP function is fixed, let's test it properly
 	aips := DecodeAIP(mockBitcom)
 	require.NotNil(t, aips, "AIP data should not be nil")
-	require.Equal(t, 1, len(aips), "Should find 1 AIP instance")
+	require.Len(t, aips, 1, "Should find 1 AIP instance")
 	require.Equal(t, "BITCOIN_ECDSA", aips[0].Algorithm, "AIP should have expected algorithm")
 	require.Equal(t, "1EXhSbGFiEAZCE5eeBvUxT6cBVHhrpPWXz", aips[0].Address, "AIP should have expected address")
 	require.Equal(t, []byte("abcdefghijklmnopqrstuvwxyz0"), aips[0].Signature, "AIP should have expected signature")
@@ -379,12 +378,12 @@ func TestDecodeAIPNilCases(t *testing.T) {
 	// Test with nil Bitcom
 	aips := DecodeAIP(nil)
 	require.NotNil(t, aips, "AIP should return empty slice, not nil")
-	require.Equal(t, 0, len(aips), "AIP should return empty slice")
+	require.Empty(t, aips, "AIP should return empty slice")
 
 	// Test with empty protocols
 	aips = DecodeAIP(&Bitcom{Protocols: []*BitcomProtocol{}})
 	require.NotNil(t, aips, "AIP should return empty slice, not nil")
-	require.Equal(t, 0, len(aips), "AIP should return empty slice")
+	require.Empty(t, aips, "AIP should return empty slice")
 
 	// Test with protocols but none matching AIP
 	aips = DecodeAIP(&Bitcom{Protocols: []*BitcomProtocol{
@@ -394,7 +393,7 @@ func TestDecodeAIPNilCases(t *testing.T) {
 		},
 	}})
 	require.NotNil(t, aips, "AIP should return empty slice, not nil")
-	require.Equal(t, 0, len(aips), "AIP should return empty slice")
+	require.Empty(t, aips, "AIP should return empty slice")
 }
 
 // TestDecodeAIPWithFieldIndexes tests decoding AIP with field indexes
@@ -419,34 +418,34 @@ func TestDecodeAIPWithFieldIndexes(t *testing.T) {
 	}
 
 	// Verify mockBitcom has an AIP protocol
-	require.Equal(t, 1, len(mockBitcom.Protocols), "Should have 1 protocol")
+	require.Len(t, mockBitcom.Protocols, 1, "Should have 1 protocol")
 	require.Equal(t, AIPPrefix, mockBitcom.Protocols[0].Protocol, "Protocol should be AIP")
 
 	// Verify AIP script structure
-	script := mockBitcom.Protocols[0].Script
-	require.NotNil(t, script, "Script should not be nil")
-	require.True(t, len(script) >= 14, "Script should contain at least the algorithm")
+	scr := mockBitcom.Protocols[0].Script
+	require.NotNil(t, scr, "Script should not be nil")
+	require.GreaterOrEqual(t, len(scr), 14, "Script should contain at least the algorithm")
 
-	fmt.Println("Protocol in TestDecodeAIPWithFieldIndexes:")
-	fmt.Println("  Protocol:", mockBitcom.Protocols[0].Protocol)
-	fmt.Printf("  Script (length %d): %x\n", len(script), script)
+	t.Log("Protocol in TestDecodeAIPWithFieldIndexes:")
+	t.Log("  Protocol:", mockBitcom.Protocols[0].Protocol)
+	t.Logf("  Script (length %d): %x", len(scr), scr)
 
 	// Verify algorithm prefix
 	expected := []byte{0x0d, 0x42, 0x49, 0x54, 0x43, 0x4f, 0x49, 0x4e, 0x5f, 0x45, 0x43, 0x44, 0x53, 0x41}
 	for i, b := range expected {
-		require.Equal(t, b, script[i], "Byte %d of algorithm should match", i)
+		require.Equal(t, b, scr[i], "Byte %d of algorithm should match", i)
 	}
 
 	// Verify field index bytes are present (simplified check)
 	indexBytes := []byte{0x01, 0x30, 0x01, 0x31, 0x01, 0x32}
-	scriptLen := len(script)
-	require.True(t, scriptLen >= len(expected)+len(indexBytes), "Script should be long enough to contain field indexes")
+	scriptLen := len(scr)
+	require.GreaterOrEqual(t, scriptLen, len(expected)+len(indexBytes), "Script should be long enough to contain field indexes")
 
 	// Now that the DecodeAIP function is fixed, let's test it properly
 	aips := DecodeAIP(mockBitcom)
 	require.NotNil(t, aips, "AIP data should not be nil")
-	require.Equal(t, 1, len(aips), "Should find 1 AIP instance")
-	require.Equal(t, 3, len(aips[0].FieldIndexes), "AIP should have 3 field indexes")
+	require.Len(t, aips, 1, "Should find 1 AIP instance")
+	require.Len(t, aips[0].FieldIndexes, 3, "AIP should have 3 field indexes")
 	require.Equal(t, 0, aips[0].FieldIndexes[0], "First field index should be 0")
 	require.Equal(t, 1, aips[0].FieldIndexes[1], "Second field index should be 1")
 	require.Equal(t, 2, aips[0].FieldIndexes[2], "Third field index should be 2")

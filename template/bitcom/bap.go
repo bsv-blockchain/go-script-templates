@@ -9,8 +9,10 @@ import (
 )
 
 // BAPPrefix is the bitcom protocol prefix for Bitcoin Attestation Protocol (BAP)
-const BAPPrefix = "1BAPSuaPnfGnSBM3GLV9yhxUdYe4vGbdMT"
-const pipeSeparator string = "|"
+const (
+	BAPPrefix            = "1BAPSuaPnfGnSBM3GLV9yhxUdYe4vGbdMT"
+	pipeSeparator string = "|"
+)
 
 // AttestationType is an enum for BAP Type Constants
 type AttestationType string
@@ -51,7 +53,7 @@ func DecodeBAP(b *Bitcom) *Bap {
 		if proto.Protocol == BAPPrefix {
 			// Create a BAP struct to hold the decoded data
 			bap := &Bap{
-				BitcomIndex: uint(ii),
+				BitcomIndex: uint(ii), //nolint:gosec // G115: safe conversion
 			}
 
 			// Parse script into chunks for analysis

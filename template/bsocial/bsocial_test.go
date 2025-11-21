@@ -3,9 +3,10 @@ package bsocial
 import (
 	"testing"
 
-	"github.com/bitcoin-sv/go-templates/template/bitcom"
 	ec "github.com/bsv-blockchain/go-sdk/primitives/ec"
 	"github.com/stretchr/testify/require"
+
+	"github.com/bsv-blockchain/go-script-templates/template/bitcom"
 )
 
 // TestCreatePost verifies the Post creation functionality
@@ -292,7 +293,7 @@ func TestDecodeTransaction(t *testing.T) {
 
 // testBSocialFromVectors is a generic test function that validates BSocial actions
 // extracted from test vectors against expected values
-func testBSocialFromVectors(t *testing.T, filePath string, actionType string) {
+func testBSocialFromVectors(t *testing.T, filePath, actionType string) {
 	// Load the test vectors
 	vectors := LoadTestVectors(t, filePath)
 
@@ -459,7 +460,7 @@ func TestPostFromVectors(t *testing.T) {
 }
 
 // TestReplyFromVectors validates Reply actions from test vectors
-// Note: replies use "post" type with context
+// Replies use "post" type with context
 func TestReplyFromVectors(t *testing.T) {
 	testBSocialFromVectors(t, "testdata/reply_test_vectors.json", "post")
 }

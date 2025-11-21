@@ -5,10 +5,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/bitcoin-sv/go-templates/template/bsv21"
-	"github.com/bitcoin-sv/go-templates/template/bsv21/pow20"
 	"github.com/bsv-blockchain/go-sdk/transaction"
 	"github.com/stretchr/testify/require"
+
+	"github.com/bsv-blockchain/go-script-templates/template/bsv21"
+	"github.com/bsv-blockchain/go-script-templates/template/bsv21/pow20"
 )
 
 // TestDecodePOW20Integration tests decoding a POW20 contract from a test vector
@@ -75,7 +76,7 @@ func TestDecodePOW20Integration(t *testing.T) {
 		}
 	}
 
-	// NOTE: We may not find POW20 data if this is just a BSV-20 JSON contract definition
+	// We may not find POW20 data if this is just a BSV-20 JSON contract definition
 	// and not the actual POW20 contract structure
 	if pow20Data != nil {
 		symbol := ""

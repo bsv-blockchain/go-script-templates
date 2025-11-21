@@ -16,8 +16,8 @@ The Sigma protocol allows for:
 
 ```go
 import (
-    "github.com/bitcoin-sv/go-templates/template/bitcom"
-    "github.com/bitcoin-sv/go-templates/template/sigma"
+    "github.com/bsv-blockchain/go-script-templates/template/bitcom"
+    "github.com/bsv-blockchain/go-script-templates/template/sigma"
 )
 
 // Decode the transaction script
@@ -33,7 +33,7 @@ for _, sig := range signatures {
     if err != nil {
         // Handle error
     }
-    
+
     // Use the signature bytes for verification or other purposes
     // ...
 }
@@ -73,4 +73,4 @@ See the test file for examples of creating and decoding Sigma signatures.
 
 ## Reference
 
-This implementation is based on the [Sigma protocol specification](https://github.com/BitcoinSchema/go-sigma) and is compatible with the JavaScript Sigma Library. 
+This implementation is based on the [Sigma protocol specification](https://github.com/BitcoinSchema/go-sigma) and is compatible with the JavaScript Sigma Library.

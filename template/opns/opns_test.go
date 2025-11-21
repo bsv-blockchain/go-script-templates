@@ -17,7 +17,7 @@ func TestDecode_WithTestVector(t *testing.T) {
 	txID := "58b7558ea379f24266c7e2f5fe321992ad9a724fd7a87423ba412677179ccb25" // Genesis
 	testdataFile := filepath.Join("testdata", txID+".hex")
 
-	hexBytes, err := os.ReadFile(testdataFile)
+	hexBytes, err := os.ReadFile(testdataFile) //nolint:gosec // G304: test file paths are controlled
 	require.NoError(t, err, "Failed to read test vector file")
 
 	tx, err := transaction.NewTransactionFromHex(strings.TrimSpace(string(hexBytes)))
@@ -47,7 +47,7 @@ func TestDecode_WithStandardPrefix(t *testing.T) {
 	txID := "935e2a477bda8709874c548fda2d504d490891ccfa5f8443705a8b6a3f403fda" // First spend?
 	testdataFile := filepath.Join("testdata", txID+".hex")
 
-	hexBytes, err := os.ReadFile(testdataFile)
+	hexBytes, err := os.ReadFile(testdataFile) //nolint:gosec // G304: test file paths are controlled
 	require.NoError(t, err, "Failed to read test vector file")
 
 	tx, err := transaction.NewTransactionFromHex(strings.TrimSpace(string(hexBytes)))
@@ -77,7 +77,7 @@ func TestDecode_SecondSpend(t *testing.T) {
 	txID := "29ad92e000dd59450fec92aa7b178e88219af92a88cad56109d3efda6d9a8c8a" // Second spend
 	testdataFile := filepath.Join("testdata", txID+".hex")
 
-	hexBytes, err := os.ReadFile(testdataFile)
+	hexBytes, err := os.ReadFile(testdataFile) //nolint:gosec // G304: test file paths are controlled
 	require.NoError(t, err, "Failed to read test vector file")
 
 	tx, err := transaction.NewTransactionFromHex(strings.TrimSpace(string(hexBytes)))
@@ -104,7 +104,7 @@ func TestDecode_ThirdSpend(t *testing.T) {
 	txID := "2320c9d77f4b726303d5845e1962e945d0af8e8ad70e866799e5fb9ec37bc405" // Third spend or later
 	testdataFile := filepath.Join("testdata", txID+".hex")
 
-	hexBytes, err := os.ReadFile(testdataFile)
+	hexBytes, err := os.ReadFile(testdataFile) //nolint:gosec // G304: test file paths are controlled
 	require.NoError(t, err, "Failed to read test vector file")
 
 	tx, err := transaction.NewTransactionFromHex(strings.TrimSpace(string(hexBytes)))
