@@ -127,10 +127,6 @@ go get -u github.com/bsv-blockchain/go-script-templates
 
 ## 📚 Documentation
 
-- **API Reference** – Dive into the godocs at [pkg.go.dev/github.com/bsv-blockchain/go-script-templates](https://pkg.go.dev/github.com/bsv-blockchain/go-script-templates)
-
-<br/>
-
 <details>
 <summary><strong><code>Development Build Commands</code></strong></summary>
 <br/>
@@ -270,7 +266,7 @@ This command ensures all dependencies are brought up to date in a single step, i
 
 ## 🧪 Examples & Tests
 
-All unit tests and [examples](examples) run via [GitHub Actions](https://github.com/bsv-blockchain/go-script-templates/actions) and use [Go version 1.24.x](https://go.dev/doc/go1.24). View the [configuration file](.github/workflows/fortress.yml).
+All unit tests and examples run via [GitHub Actions](https://github.com/bsv-blockchain/go-script-templates/actions) and use [Go version 1.24.x](https://go.dev/doc/go1.24). View the [configuration file](.github/workflows/fortress.yml).
 
 Run all tests (fast):
 
