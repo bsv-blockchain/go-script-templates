@@ -6,13 +6,14 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/bitcoin-sv/go-templates/template/bitcom"
-	"github.com/bitcoin-sv/go-templates/template/inscription"
-	"github.com/bitcoin-sv/go-templates/template/p2pkh"
 	ec "github.com/bsv-blockchain/go-sdk/primitives/ec"
 	"github.com/bsv-blockchain/go-sdk/script"
 	"github.com/bsv-blockchain/go-sdk/transaction"
 	"github.com/stretchr/testify/require"
+
+	"github.com/bsv-blockchain/go-script-templates/template/bitcom"
+	"github.com/bsv-blockchain/go-script-templates/template/inscription"
+	"github.com/bsv-blockchain/go-script-templates/template/p2pkh"
 )
 
 // TestOrdP2PKHDecode verifies that the Decode function properly identifies scripts

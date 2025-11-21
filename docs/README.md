@@ -4,22 +4,22 @@ Welcome to the documentation for the BSV Script Templates repository. This docum
 
 ## Structure
 
-- Templates `./templates/*/README.md` - Documentation for individual script templates
-- [Contributing](../CONTRIBUTING.md) - Guide for contributors
+- Templates `./template/*/README.md` - Documentation for individual script templates
+- [Contributing](../.github/CONTRIBUTING.md) - Guide for contributors
 
 ## Getting Started
 
 ### Installation
 
 ```bash
-go get github.com/bitcoin-sv/go-templates
+go get github.com/bsv-blockchain/go-script-templates
 ```
 
 ### Basic Usage
 
 1. Import the specific template you need:
    ```go
-   import "github.com/bitcoin-sv/go-templates/template/bsocial"
+   import "github.com/bsv-blockchain/go-script-templates/template/bsocial"
    ```
 
 2. Use the template functions to create or decode transactions:
@@ -31,17 +31,17 @@ go get github.com/bitcoin-sv/go-templates
 
 The repository includes templates for various use cases:
 
-- **[BitCom](./templates/bitcom/README.md)** - BitCom protocol utilities (B, MAP, AIP)
-- **[BSocial](./templates/bsocial/README.md)** - Social media actions using BitcoinSchema.org standards
-- **[BSV20](./templates/bsv20/README.md)** - BSV20 token standard implementation
-- **[BSV21](./templates/bsv21/README.md)** - BSV21 token standard implementation including LTM and POW20
-- **[Cosign](./templates/cosign/README.md)** - Co-signing transactions with multiple parties
-- **[Inscription](./templates/inscription/README.md)** - On-chain NFT-like inscriptions
-- **[Lockup](./templates/lockup/README.md)** - Time-locked transactions
-- **[OrdLock](./templates/ordlock/README.md)** - Locking and unlocking functionality for ordinals
-- **[OrdP2PKH](./templates/ordp2pkh/README.md)** - Ordinal-aware P2PKH transactions
-- **[P2PKH](./templates/p2pkh/README.md)** - Standard Pay-to-Public-Key-Hash transactions
-- **[Shrug](./templates/shrug/README.md)** - Experimental template for demo purposes
+- **[BitCom](../template/bitcom/README.md)** - BitCom protocol utilities (B, MAP, AIP)
+- **[BSocial](../template/bsocial)** - Social media actions using BitcoinSchema.org standards
+- **[BSV20](../template/bsv20)** - BSV20 token standard implementation
+- **[BSV21](../template/bsv21)** - BSV21 token standard implementation including LTM and POW20
+- **[Cosign](../template/cosign)** - Co-signing transactions with multiple parties
+- **[Inscription](../template/inscription)** - On-chain NFT-like inscriptions
+- **[Lockup](../template/lockup)** - Time-locked transactions
+- **[OrdLock](../template/ordlock)** - Locking and unlocking functionality for ordinals
+- **[OrdP2PKH](../template/ordp2pkh)** - Ordinal-aware P2PKH transactions
+- **[P2PKH](../template/p2pkh)** - Standard Pay-to-Public-Key-Hash transactions
+- **[Shrug](../template/shrug)** - Experimental template for demo purposes
 
 ## Support
 
@@ -53,4 +53,4 @@ If you encounter issues or have questions, please:
 
 ## License
 
-The code in this repository is licensed under the Open BSV License. See [LICENSE.txt](../LICENSE.txt) for details. 
+The code in this repository is licensed under the Open BSV License. See [LICENSE](../LICENSE) for details. 

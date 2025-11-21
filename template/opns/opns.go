@@ -15,9 +15,11 @@ import (
 
 const DIFFICULTY = 22
 
-var txStr = "58b7558ea379f24266c7e2f5fe321992ad9a724fd7a87423ba412677179ccb25_0"
-var GENESIS *transaction.Outpoint
-var comp = big.NewInt(0)
+var (
+	txStr   = "58b7558ea379f24266c7e2f5fe321992ad9a724fd7a87423ba412677179ccb25_0"
+	GENESIS *transaction.Outpoint
+	comp    = big.NewInt(0)
+)
 
 func init() {
 	var err error
@@ -105,7 +107,6 @@ func Decode(s *script.Script) *OpNS {
 }
 
 func Lock(claimed []byte, domain string, pow []byte) *script.Script {
-
 	state := script.NewFromBytes([]byte{})
 	state.AppendOpcodes(script.OpRETURN, script.OpFALSE)
 	state.AppendPushData(GENESIS.TxBytes())
@@ -186,5 +187,4 @@ func (o *OpnsUnlocker) EstimateLength(tx *transaction.Transaction, inputIndex ui
 		len(osPrefix) + len(*o.OwnerScript) + // push data ownerScript
 		len(toPrefix) + len(trailingOutputs) + // push data trailingOutputs
 		len(preimagePrefix) + len(preimage)) // push data preimage
-
 }

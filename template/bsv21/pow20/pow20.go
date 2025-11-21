@@ -8,13 +8,14 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/bitcoin-sv/go-templates/template/bsv21"
 	"github.com/bsv-blockchain/go-sdk/chainhash"
 	"github.com/bsv-blockchain/go-sdk/script"
 	"github.com/bsv-blockchain/go-sdk/script/interpreter"
 	"github.com/bsv-blockchain/go-sdk/transaction"
 	sighash "github.com/bsv-blockchain/go-sdk/transaction/sighash"
 	"github.com/bsv-blockchain/go-sdk/transaction/template/p2pkh"
+
+	"github.com/bsv-blockchain/go-script-templates/template/bsv21"
 )
 
 // Pow20 represents a POW20 token, extending BSV21 with POW20-specific fields
@@ -156,7 +157,7 @@ func Decode(s *script.Script) *Pow20 {
 	return p
 }
 
-func (p *Pow20) BuildUnlockTx(nonce []byte, recipient *script.Address, changeAddress *script.Address) (*transaction.Transaction, error) {
+func (p *Pow20) BuildUnlockTx(nonce []byte, recipient, changeAddress *script.Address) (*transaction.Transaction, error) {
 	tx := transaction.NewTransaction()
 	unlock, err := p.Unlock(nonce, recipient)
 	if err != nil {
@@ -298,5 +299,4 @@ func (o *Pow20Unlocker) EstimateLength(tx *transaction.Transaction, inputIndex u
 	return uint32(55 + // OP_RETURN isGenesis push recipient push change sats push change pkh
 		len(noncePrefix) + len(o.Nonce) + // push data ownerScript
 		len(preimagePrefix) + len(preimage)) // push data preimage
-
 }

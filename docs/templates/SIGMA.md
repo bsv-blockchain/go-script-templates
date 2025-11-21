@@ -16,8 +16,8 @@ The Sigma protocol allows for:
 
 ```go
 import (
-    "github.com/bitcoin-sv/go-templates/template/bitcom"
-    "github.com/bitcoin-sv/go-templates/template/sigma"
+    "github.com/bsv-blockchain/go-script-templates/template/bitcom"
+    "github.com/bsv-blockchain/go-script-templates/template/sigma"
 )
 
 // Decode the transaction script

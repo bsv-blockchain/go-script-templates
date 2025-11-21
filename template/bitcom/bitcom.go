@@ -24,7 +24,7 @@ func Decode(scr *script.Script) (bitcom *Bitcom) {
 
 	pos := findReturn(scr, 0)
 	if pos == -1 {
-		return
+		return bitcom
 	}
 	var prefix []byte
 	if pos > 0 {
@@ -41,7 +41,7 @@ func Decode(scr *script.Script) (bitcom *Bitcom) {
 			Pos: pos,
 		}
 		if op, err := scr.ReadOp(&pos); err != nil {
-			return
+			return bitcom
 		} else {
 			p.Protocol = string(op.Data)
 		}

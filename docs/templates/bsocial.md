@@ -36,7 +36,7 @@ The BSocial template is part of the broader BitcoinSchema ecosystem, which inclu
 ## Installation
 
 ```bash
-go get github.com/bitcoin-sv/go-templates/template/bsocial
+go get github.com/bsv-blockchain/go-script-templates/template/bsocial
 ```
 
 ## Usage Examples
@@ -45,8 +45,8 @@ go get github.com/bitcoin-sv/go-templates/template/bsocial
 
 ```go
 import (
-    "github.com/bitcoin-sv/go-templates/template/bsocial"
-    "github.com/bitcoin-sv/go-templates/template/bitcom"
+    "github.com/bsv-blockchain/go-script-templates/template/bsocial"
+    "github.com/bsv-blockchain/go-script-templates/template/bitcom"
     ec "github.com/bsv-blockchain/go-sdk/primitives/ec"
 )
 

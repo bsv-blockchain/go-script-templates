@@ -1,11 +1,10 @@
 package bitcom
 
 import (
+	"encoding/base64"
 	"os"
 	"strings"
 	"testing"
-
-	"encoding/base64"
 
 	"github.com/bsv-blockchain/go-sdk/script"
 	"github.com/bsv-blockchain/go-sdk/transaction"

@@ -6,12 +6,13 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/bitcoin-sv/go-templates/template/inscription"
 	ec "github.com/bsv-blockchain/go-sdk/primitives/ec"
 	"github.com/bsv-blockchain/go-sdk/script"
 	"github.com/bsv-blockchain/go-sdk/transaction"
 	"github.com/bsv-blockchain/go-sdk/transaction/template/p2pkh"
 	"github.com/stretchr/testify/require"
+
+	"github.com/bsv-blockchain/go-script-templates/template/inscription"
 )
 
 // TestDecodeLTMFromTestVector tests decoding a Lock-to-Mint (LTM) contract from a test vector

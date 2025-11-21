@@ -10,19 +10,19 @@ The goal of this repository is to provide a place where developers from around t
 
 ## Available Templates
 
-| Template | Description | 
-|----------|-------------|
-| [BitCom](./template/bitcom/) | BitCom protocol utilities (B, MAP, AIP) for structured data |
-| [BSocial](./template/bsocial/) | Social media actions using BitcoinSchema.org standards |
-| [BSV20](./template/bsv20/) | BSV20 token standard implementation |
-| [BSV21](./template/bsv21/) | BSV21 token standard implementation including LTM and POW20 |
-| [Cosign](./template/cosign/) | Co-signing transactions with multiple parties |
-| [Inscription](./template/inscription/) | On-chain NFT-like inscriptions |
-| [Lockup](./template/lockup/) | Time-locked transactions |
-| [OrdLock](./template/ordlock/) | Locking and unlocking functionality for ordinals |
-| [OrdP2PKH](./template/ordp2pkh/) | Ordinal-aware P2PKH transactions |
-| [P2PKH](./template/p2pkh/) | Standard Pay-to-Public-Key-Hash transactions |
-| [Shrug](./template/shrug/) | Experimental template for demo purposes |
+| Template                            | Description                                                 | 
+|-------------------------------------|-------------------------------------------------------------|
+| [BitCom](template/bitcom)           | BitCom protocol utilities (B, MAP, AIP) for structured data |
+| [BSocial](template/bsocial)         | Social media actions using BitcoinSchema.org standards      |
+| [BSV20](template/bsv20)             | BSV20 token standard implementation                         |
+| [BSV21](template/bsv21)             | BSV21 token standard implementation including LTM and POW20 |
+| [Cosign](template/cosign)           | Co-signing transactions with multiple parties               |
+| [Inscription](template/inscription) | On-chain NFT-like inscriptions                              |
+| [Lockup](template/lockup)           | Time-locked transactions                                    |
+| [OrdLock](template/ordlock)         | Locking and unlocking functionality for ordinals            |
+| [OrdP2PKH](template/ordp2pkh)       | Ordinal-aware P2PKH transactions                            |
+| [P2PKH](template/p2pkh)             | Standard Pay-to-Public-Key-Hash transactions                |
+| [Shrug](template/shrug)             | Experimental template for demo purposes                     |
 
 Each template folder contains its own README with detailed usage examples.
 
@@ -30,7 +30,7 @@ Each template folder contains its own README with detailed usage examples.
 ## Installation
 
 ```bash
-go get github.com/bitcoin-sv/go-templates
+go get github.com/bsv-blockchain/go-script-templates
 ```
 
 ## Basic Usage
@@ -38,7 +38,7 @@ go get github.com/bitcoin-sv/go-templates
 Import the specific template you need:
 
 ```go
-import "github.com/bitcoin-sv/go-templates/template/bsocial"
+import "github.com/bsv-blockchain/go-script-templates/template/bsocial"
 ```
 
 See each template's README for detailed examples.
@@ -55,7 +55,7 @@ We welcome contributions of all kinds:
 
 ## License
 
-Open BSV License - See [LICENSE.txt](./LICENSE.txt)
+Open BSV License - See [LICENSE.txt](LICENSE)
 
 ## Support
 

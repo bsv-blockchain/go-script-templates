@@ -11,13 +11,14 @@ import (
 	"encoding/json"
 	"strconv"
 
-	"github.com/bitcoin-sv/go-templates/template/bsv21"
-	"github.com/bitcoin-sv/go-templates/template/cosign"
-	"github.com/bitcoin-sv/go-templates/template/inscription"
 	ec "github.com/bsv-blockchain/go-sdk/primitives/ec"
 	"github.com/bsv-blockchain/go-sdk/script"
 	"github.com/bsv-blockchain/go-sdk/transaction"
 	sighash "github.com/bsv-blockchain/go-sdk/transaction/sighash"
+
+	"github.com/bsv-blockchain/go-script-templates/template/bsv21"
+	"github.com/bsv-blockchain/go-script-templates/template/cosign"
+	"github.com/bsv-blockchain/go-script-templates/template/inscription"
 )
 
 // OrdCosign represents a BSV21 token with a Cosign locking script
@@ -277,7 +278,7 @@ func (oc *OrdCosign) ApproverUnlock(key *ec.PrivateKey, userScript *script.Scrip
 }
 
 // ToUnlocker creates a transaction input unlocker for this OrdCosign
-func (oc *OrdCosign) ToUnlocker(ownerKey *ec.PrivateKey, approverKey *ec.PrivateKey, sigHashFlag *sighash.Flag) (*OrdCosignUnlocker, error) {
+func (oc *OrdCosign) ToUnlocker(ownerKey, approverKey *ec.PrivateKey, sigHashFlag *sighash.Flag) (*OrdCosignUnlocker, error) {
 	if sigHashFlag == nil {
 		shf := sighash.AllForkID
 		sigHashFlag = &shf

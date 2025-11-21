@@ -9,8 +9,10 @@ import (
 )
 
 // BAPPrefix is the bitcom protocol prefix for Bitcoin Attestation Protocol (BAP)
-const BAPPrefix = "1BAPSuaPnfGnSBM3GLV9yhxUdYe4vGbdMT"
-const pipeSeparator string = "|"
+const (
+	BAPPrefix            = "1BAPSuaPnfGnSBM3GLV9yhxUdYe4vGbdMT"
+	pipeSeparator string = "|"
+)
 
 // AttestationType is an enum for BAP Type Constants
 type AttestationType string

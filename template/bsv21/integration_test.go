@@ -5,10 +5,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/bitcoin-sv/go-templates/template/bsv21"
-	"github.com/bitcoin-sv/go-templates/template/bsv21/pow20"
 	"github.com/bsv-blockchain/go-sdk/transaction"
 	"github.com/stretchr/testify/require"
+
+	"github.com/bsv-blockchain/go-script-templates/template/bsv21"
+	"github.com/bsv-blockchain/go-script-templates/template/bsv21/pow20"
 )
 
 // TestDecodePOW20Integration tests decoding a POW20 contract from a test vector

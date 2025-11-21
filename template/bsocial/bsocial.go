@@ -4,12 +4,13 @@ import (
 	"encoding/base64"
 	"fmt"
 
-	"github.com/bitcoin-sv/go-templates/template/bitcom"
-	"github.com/bitcoin-sv/go-templates/template/p2pkh"
 	bsm "github.com/bsv-blockchain/go-sdk/compat/bsm"
 	ec "github.com/bsv-blockchain/go-sdk/primitives/ec"
 	"github.com/bsv-blockchain/go-sdk/script"
 	"github.com/bsv-blockchain/go-sdk/transaction"
+
+	"github.com/bsv-blockchain/go-script-templates/template/bitcom"
+	"github.com/bsv-blockchain/go-script-templates/template/p2pkh"
 )
 
 const (
@@ -142,7 +143,7 @@ func DecodeTransaction(tx *transaction.Transaction) (bsocial *BSocial) {
 		return nil
 	}
 
-	return
+	return bsocial
 }
 
 // processProtocols extracts and processes BitCom protocol data
