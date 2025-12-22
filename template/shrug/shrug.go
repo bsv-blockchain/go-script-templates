@@ -26,7 +26,7 @@ func Decode(s *script.Script) *Shrug {
 	} else if op, err = s.ReadOp(&pos); err != nil {
 		return nil
 	} else if len(op.Data) == 36 {
-		shrug.Id = transaction.NewOutpointFromBytes([36]byte(op.Data))
+		shrug.Id = transaction.NewOutpointFromBytes(op.Data)
 	} else if op, err = s.ReadOp(&pos); err != nil {
 		return nil
 	} else if op.Op != script.Op2DROP {
