@@ -2,8 +2,8 @@ github.com/bitcoinschema/go-bpu v0.2.2 h1:F/eIC8XhzwgptpA1+rgYQo8bzT51nVozdXpASs
 github.com/bitcoinschema/go-bpu v0.2.2/go.mod h1:zppAI/4uAi+lSKBAc7QtWp98d+iczCB6CnGrGV75fAQ=
 github.com/bitcoinschema/go-sigma v0.1.2 h1:tFNlZZ8QnSokHlWL/39+NCzC1x2lTO3uOJhcvBkC1TE=
 github.com/bitcoinschema/go-sigma v0.1.2/go.mod h1:9mkkvkONfiSCPPTQimJYNp+5darSfSxZbuD225AGq9M=
-github.com/bsv-blockchain/go-sdk v1.2.13 h1:jcIff1WWAchtgxHJO80Y57LbxmwUG0rS48pmY6SvgnM=
-github.com/bsv-blockchain/go-sdk v1.2.13/go.mod h1:HugEqK6K46nUAN0Xr9xq0HW8QHtpJmAg05NmcxPc1Lk=
+github.com/bsv-blockchain/go-sdk v1.2.14 h1:Yhp/UIYByE5pC2OXqYPK1fe0d8cVPqywaWcfCb/oZ2o=
+github.com/bsv-blockchain/go-sdk v1.2.14/go.mod h1:tP9RkD+1BKw2KSXSQwh2j/h01PoZ2FEuzN1z089iU+Y=
 github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ33E=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
@@ -24,10 +24,10 @@ github.com/rogpeppe/go-internal v1.14.1 h1:UQB4HGPB6osV0SQTLymcB4TgvyWu6ZyliaW0t
 github.com/rogpeppe/go-internal v1.14.1/go.mod h1:MaRKkUm5W0goXpeCfT7UZI6fk/L7L7so1lCWt35ZSgc=
 github.com/stretchr/testify v1.11.1 h1:7s2iGBzp5EwR7/aIZr8ao5+dra3wiQyKjjFuvgVKu7U=
 github.com/stretchr/testify v1.11.1/go.mod h1:wZwfW3scLgRK+23gO65QZefKpKQRnfz6sD981Nm4B6U=
-golang.org/x/crypto v0.45.0 h1:jMBrvKuj23MTlT0bQEOBcAE0mjg8mK9RXFhRH6nyF3Q=
-golang.org/x/crypto v0.45.0/go.mod h1:XTGrrkGJve7CYK7J8PEww4aY7gM3qMCElcJQ8n8JdX4=
-golang.org/x/sync v0.18.0 h1:kr88TuHDroi+UVf+0hZnirlk8o8T+4MrK6mr60WkH/I=
-golang.org/x/sync v0.18.0/go.mod h1:9KTHXmSnoGruLpwFjVSX0lNNA75CykiMECbovNTZqGI=
+golang.org/x/crypto v0.46.0 h1:cKRW/pmt1pKAfetfu+RCEvjvZkA9RimPbh7bhFjGVBU=
+golang.org/x/crypto v0.46.0/go.mod h1:Evb/oLKmMraqjZ2iQTwDwvCtJkczlDuTmdJXoZVzqU0=
+golang.org/x/sync v0.19.0 h1:vV+1eWNmZ5geRlYjzm2adRgW2/mcpevXNg50YZtPCE4=
+golang.org/x/sync v0.19.0/go.mod h1:9KTHXmSnoGruLpwFjVSX0lNNA75CykiMECbovNTZqGI=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c h1:Hei/4ADfdWqJk1ZMxUNpqntNwaWcugrBjAiHlqqRiVk=
 gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c/go.mod h1:JHkPIbrfpd72SG/EVd6muEfDQjcINNoR0C8j2r3qZ4Q=
