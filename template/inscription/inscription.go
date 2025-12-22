@@ -62,7 +62,7 @@ func Decode(scr *script.Script) *Inscription {
 					}
 				case 3:
 					if len(op2.Data) == 36 {
-						insc.Parent = transaction.NewOutpointFromBytes([36]byte(op2.Data))
+						insc.Parent = transaction.NewOutpointFromBytes(op2.Data)
 					}
 				}
 
