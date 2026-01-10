@@ -129,7 +129,7 @@ func TestCosignOwnerUnlock(t *testing.T) {
 	require.NoError(t, err)
 
 	// Add an output
-	p2pkhBytes := make([]byte, 0)
+	p2pkhBytes := make([]byte, 0, 25)
 	p2pkhBytes = append(p2pkhBytes, script.OpDUP, script.OpHASH160, script.OpDATA20)
 	p2pkhBytes = append(p2pkhBytes, ownerAddress.PublicKeyHash...)
 	p2pkhBytes = append(p2pkhBytes, script.OpEQUALVERIFY, script.OpCHECKSIG)
@@ -205,7 +205,7 @@ func TestCosignApproverUnlock(t *testing.T) {
 	require.NoError(t, err)
 
 	// Add an output
-	p2pkhBytes := make([]byte, 0)
+	p2pkhBytes := make([]byte, 0, 25)
 	p2pkhBytes = append(p2pkhBytes, script.OpDUP, script.OpHASH160, script.OpDATA20)
 	p2pkhBytes = append(p2pkhBytes, ownerAddress.PublicKeyHash...)
 	p2pkhBytes = append(p2pkhBytes, script.OpEQUALVERIFY, script.OpCHECKSIG)

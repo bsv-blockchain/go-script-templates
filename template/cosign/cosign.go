@@ -94,7 +94,7 @@ func (c *CosignOwnerTemplate) Sign(tx *transaction.Transaction, inputIndex uint3
 	pubKey := c.PrivateKey.PubKey().Compressed()
 	signature := sig.Serialize()
 
-	sigBuf := make([]byte, 0)
+	sigBuf := make([]byte, 0, len(signature)+1)
 	sigBuf = append(sigBuf, signature...)
 	sigBuf = append(sigBuf, uint8(*c.SigHashFlag))
 
@@ -150,7 +150,7 @@ func (c *CosignApproverTemplate) Sign(tx *transaction.Transaction, inputIndex ui
 
 	signature := sig.Serialize()
 
-	sigBuf := make([]byte, 0)
+	sigBuf := make([]byte, 0, len(signature)+1)
 	sigBuf = append(sigBuf, signature...)
 	sigBuf = append(sigBuf, uint8(*c.SigHashFlag))
 
