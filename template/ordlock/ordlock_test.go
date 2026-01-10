@@ -44,7 +44,7 @@ func TestCreateOrdLockScript(t *testing.T) {
 	payoutOutput.LockingScript = emptyScript
 
 	// Manually build an OrdLock script similar to what we'd expect from the package
-	var scriptData []byte
+	scriptData := make([]byte, 0, len(OrdLockPrefix)+1+len(publicKeyHash)+1+len(payoutOutput.Bytes())+len(OrdLockSuffix))
 
 	// Add the prefix
 	scriptData = append(scriptData, OrdLockPrefix...)
@@ -87,7 +87,8 @@ func TestOrdLockDecode(t *testing.T) {
 	txOut.LockingScript = emptyScript
 
 	// Create a script buffer with the OrdLock data
-	var scriptData []byte
+	outputBytes := txOut.Bytes()
+	scriptData := make([]byte, 0, len(OrdLockPrefix)+1+len(publicKeyHash)+1+len(outputBytes)+len(OrdLockSuffix))
 
 	// Add the prefix
 	scriptData = append(scriptData, OrdLockPrefix...)
@@ -97,7 +98,6 @@ func TestOrdLockDecode(t *testing.T) {
 	scriptData = append(scriptData, publicKeyHash...)
 
 	// Add the payout output
-	outputBytes := txOut.Bytes()
 	scriptData = append(scriptData, byte(len(outputBytes))) // Length of output data
 	scriptData = append(scriptData, outputBytes...)
 
