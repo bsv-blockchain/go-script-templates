@@ -2,8 +2,8 @@ github.com/bitcoinschema/go-bpu v0.2.2 h1:F/eIC8XhzwgptpA1+rgYQo8bzT51nVozdXpASs
 github.com/bitcoinschema/go-bpu v0.2.2/go.mod h1:zppAI/4uAi+lSKBAc7QtWp98d+iczCB6CnGrGV75fAQ=
 github.com/bitcoinschema/go-sigma v0.1.2 h1:tFNlZZ8QnSokHlWL/39+NCzC1x2lTO3uOJhcvBkC1TE=
 github.com/bitcoinschema/go-sigma v0.1.2/go.mod h1:9mkkvkONfiSCPPTQimJYNp+5darSfSxZbuD225AGq9M=
-github.com/bsv-blockchain/go-sdk v1.2.14 h1:Yhp/UIYByE5pC2OXqYPK1fe0d8cVPqywaWcfCb/oZ2o=
-github.com/bsv-blockchain/go-sdk v1.2.14/go.mod h1:tP9RkD+1BKw2KSXSQwh2j/h01PoZ2FEuzN1z089iU+Y=
+github.com/bsv-blockchain/go-sdk v1.2.16 h1:jHdloY8RAXVn3hdWVcDqGaAgMdVu1WFcb+7enGgjndY=
+github.com/bsv-blockchain/go-sdk v1.2.16/go.mod h1:QWYwia7QSPB8+sLWyVldsIg0wPPzvEmXL5wGAT0dgaA=
 github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ33E=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
@@ -24,8 +24,8 @@ github.com/rogpeppe/go-internal v1.14.1 h1:UQB4HGPB6osV0SQTLymcB4TgvyWu6ZyliaW0t
 github.com/rogpeppe/go-internal v1.14.1/go.mod h1:MaRKkUm5W0goXpeCfT7UZI6fk/L7L7so1lCWt35ZSgc=
 github.com/stretchr/testify v1.11.1 h1:7s2iGBzp5EwR7/aIZr8ao5+dra3wiQyKjjFuvgVKu7U=
 github.com/stretchr/testify v1.11.1/go.mod h1:wZwfW3scLgRK+23gO65QZefKpKQRnfz6sD981Nm4B6U=
-golang.org/x/crypto v0.46.0 h1:cKRW/pmt1pKAfetfu+RCEvjvZkA9RimPbh7bhFjGVBU=
-golang.org/x/crypto v0.46.0/go.mod h1:Evb/oLKmMraqjZ2iQTwDwvCtJkczlDuTmdJXoZVzqU0=
+golang.org/x/crypto v0.47.0 h1:V6e3FRj+n4dbpw86FJ8Fv7XVOql7TEwpHapKoMJ/GO8=
+golang.org/x/crypto v0.47.0/go.mod h1:ff3Y9VzzKbwSSEzWqJsJVBnWmRwRSHt/6Op5n9bQc4A=
 golang.org/x/sync v0.19.0 h1:vV+1eWNmZ5geRlYjzm2adRgW2/mcpevXNg50YZtPCE4=
 golang.org/x/sync v0.19.0/go.mod h1:9KTHXmSnoGruLpwFjVSX0lNNA75CykiMECbovNTZqGI=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
