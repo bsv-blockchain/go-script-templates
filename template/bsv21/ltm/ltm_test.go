@@ -336,7 +336,7 @@ func TestDecode_DecimalsEdgeCases(t *testing.T) {
 		if i == 2 {
 			scriptBytes = append(scriptBytes, 0x52) // Op2
 		} else {
-			scriptBytes = append(scriptBytes, byte(len(chunk)))
+			scriptBytes = append(scriptBytes, byte(len(chunk))) //nolint:gosec // G115: safe conversion
 			scriptBytes = append(scriptBytes, chunk...)
 		}
 	}
@@ -367,7 +367,7 @@ func TestDecode_DecimalsAsData(t *testing.T) {
 	}
 	scriptBytes := []byte("LTM_PREFIX")
 	for _, chunk := range chunks {
-		scriptBytes = append(scriptBytes, byte(len(chunk)))
+		scriptBytes = append(scriptBytes, byte(len(chunk))) //nolint:gosec // G115: safe conversion
 		scriptBytes = append(scriptBytes, chunk...)
 	}
 	scriptBytes = append(scriptBytes, []byte("LTM_SUFFIX")...)

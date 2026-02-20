@@ -324,5 +324,5 @@ func TestCreateBAP(t *testing.T) {
 	// Verify the decoded BAP ATTEST data
 	assert.Equal(t, ATTEST, attestBap.Type)
 	assert.Equal(t, txid, attestBap.IDKey)
-	assert.Equal(t, uint64(seqNum), attestBap.Sequence) //nolint:gosec // G115: safe test value
+	assert.Equal(t, uint64(seqNum), attestBap.Sequence)
 }

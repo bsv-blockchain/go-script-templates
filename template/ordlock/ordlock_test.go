@@ -55,7 +55,7 @@ func TestCreateOrdLockScript(t *testing.T) {
 
 	// Add the payout output
 	outputBytes := payoutOutput.Bytes()
-	scriptData = append(scriptData, byte(len(outputBytes))) // Length of output data
+	scriptData = append(scriptData, byte(len(outputBytes))) //nolint:gosec // G115: safe conversion
 	scriptData = append(scriptData, outputBytes...)
 
 	// Add the suffix
@@ -98,7 +98,7 @@ func TestOrdLockDecode(t *testing.T) {
 	scriptData = append(scriptData, publicKeyHash...)
 
 	// Add the payout output
-	scriptData = append(scriptData, byte(len(outputBytes))) // Length of output data
+	scriptData = append(scriptData, byte(len(outputBytes))) //nolint:gosec // G115: safe conversion
 	scriptData = append(scriptData, outputBytes...)
 
 	// Add the suffix
