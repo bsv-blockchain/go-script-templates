@@ -113,6 +113,7 @@ The goal of this repository is to provide a place where developers from around t
 | [BSV20](template/bsv20)             | BSV20 token standard implementation                         |
 | [BSV21](template/bsv21)             | BSV21 token standard implementation including LTM and POW20 |
 | [Cosign](template/cosign)           | Co-signing transactions with multiple parties               |
+| [HashPuzzle](template/hashpuzzle)   | SHA-256 hash puzzle — spend by revealing a secret preimage  |
 | [Inscription](template/inscription) | On-chain NFT-like inscriptions                              |
 | [Lockup](template/lockup)           | Time-locked transactions                                    |
 | [OrdLock](template/ordlock)         | Locking and unlocking functionality for ordinals            |
