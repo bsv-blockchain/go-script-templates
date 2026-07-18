@@ -80,7 +80,7 @@ func TestUnlock_EstimateLengthMatchesActual(t *testing.T) {
 
 		unlockingScript, err := unlocker.Sign(nil, 0)
 		require.NoError(t, err)
-		require.Equal(t, int(unlocker.EstimateLength(nil, 0)), len(*unlockingScript),
+		require.Len(t, *unlockingScript, int(unlocker.EstimateLength(nil, 0)),
 			"estimate must match actual for secret length %d", n)
 	}
 }
