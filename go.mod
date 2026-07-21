@@ -4,7 +4,7 @@ go 1.25.0
 
 require (
 	github.com/bitcoinschema/go-sigma v0.1.2
-	github.com/bsv-blockchain/go-sdk v1.3.0
+	github.com/bsv-blockchain/go-sdk v1.3.1
 	github.com/stretchr/testify v1.11.1
 )
 
