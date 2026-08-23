@@ -15,6 +15,8 @@ const (
 )
 
 // PKHash is a wrapper around a byte slice representing a public key hash
+//
+//nolint:recvcheck // MarshalJSON needs a value receiver for correct value marshaling, while FromAddress/UnmarshalJSON must mutate through a pointer receiver.
 type PKHash []byte
 
 // Address returns the address string representation of the public key hash
