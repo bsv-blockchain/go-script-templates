@@ -247,13 +247,28 @@ func TestToScript(t *testing.T) {
 	// Reset test state
 	resetTestState()
 
+	// A script that still carries the MAP prefix is not what DecodeMap is
+	// handed in practice: bitcom.Decode strips the prefix and passes only the
+	// protocol body. Feeding the prefixed script in reads the prefix itself as
+	// the command, which is not a MAP command, so it decodes to nil.
+	resetTestState()
+	require.Nil(t, DecodeMap(s), "prefix is not a MAP command, so it does not decode")
+
+	// DecodeMap operates on the protocol body, prefix already stripped.
+	body := &script.Script{}
+	_ = body.AppendPushData([]byte(MapCmdSet))
+	_ = body.AppendPushData([]byte("app"))
+	_ = body.AppendPushData([]byte("bsocial"))
+	bodyBytes := body.Bytes()
+
 	// Decode Map from different sources
-	mapFromScript := DecodeMap(s)
+	resetTestState()
+	mapFromScript := DecodeMap(body)
 
 	// Reset test state
 	resetTestState()
 
-	mapFromBytes := DecodeMap(bytes)
+	mapFromBytes := DecodeMap(bodyBytes)
 
 	t.Logf("mapFromScript: %+v", mapFromScript)
 	t.Logf("mapFromBytes: %+v", mapFromBytes)
@@ -261,4 +276,228 @@ func TestToScript(t *testing.T) {
 	// Check if both are non-nil
 	require.NotNil(t, mapFromScript, "DecodeMap should work with script")
 	require.NotNil(t, mapFromBytes, "DecodeMap should work with bytes")
+	require.Equal(t, "bsocial", mapFromScript.Data["app"])
+	require.Equal(t, "bsocial", mapFromBytes.Data["app"])
+}
+
+// mapScript builds a bare MAP protocol body: the command followed by its
+// pushes, with no protocol prefix. This is what bitcom.Decode hands DecodeMap.
+func mapScript(t *testing.T, cmd MapCmd, pushes ...string) *script.Script {
+	t.Helper()
+	s := &script.Script{}
+	require.NoError(t, s.AppendPushData([]byte(cmd)))
+	for _, p := range pushes {
+		require.NoError(t, s.AppendPushData([]byte(p)))
+	}
+	return s
+}
+
+// TestDecodeMapRemove covers the REMOVE command, which clears single-value
+// keys. Every push after the command is a key.
+func TestDecodeMapRemove(t *testing.T) {
+	resetTestState()
+
+	t.Run("reads every key it names", func(t *testing.T) {
+		resetTestState()
+
+		result := DecodeMap(mapScript(t, MapCmdRemove, "profile.name", "profile.text"))
+
+		require.NotNil(t, result)
+		require.Equal(t, MapCmdRemove, result.Cmd)
+		require.Len(t, result.Data, 2)
+		require.Contains(t, result.Data, "profile.name")
+		require.Contains(t, result.Data, "profile.text")
+		require.Equal(t, "", result.Data["profile.name"])
+		require.Equal(t, "", result.Data["profile.text"])
+		require.Empty(t, result.Adds)
+		require.Empty(t, result.Deletes)
+	})
+
+	t.Run("single key", func(t *testing.T) {
+		resetTestState()
+
+		result := DecodeMap(mapScript(t, MapCmdRemove, "profile.name"))
+
+		require.NotNil(t, result)
+		require.Equal(t, MapCmdRemove, result.Cmd)
+		require.Len(t, result.Data, 1)
+		require.Contains(t, result.Data, "profile.name")
+	})
+
+	t.Run("no keys returns nil", func(t *testing.T) {
+		resetTestState()
+
+		require.Nil(t, DecodeMap(mapScript(t, MapCmdRemove)))
+	})
+}
+
+// TestDecodeMapAdd covers the ADD command, which appends values to one
+// list-valued key. The key is read first, then every remaining push is a value.
+func TestDecodeMapAdd(t *testing.T) {
+	resetTestState()
+
+	t.Run("reads one key then all remaining values", func(t *testing.T) {
+		resetTestState()
+
+		result := DecodeMap(mapScript(t, MapCmdAdd, "interests", "cars", "science", "boats"))
+
+		require.NotNil(t, result)
+		require.Equal(t, MapCmdAdd, result.Cmd)
+		// The key is a key, never one of the values.
+		require.Equal(t, []string{"cars", "science", "boats"}, result.Adds)
+		require.NotContains(t, result.Adds, "interests")
+		require.Equal(t, "cars science boats", result.Data["interests"])
+		require.Len(t, result.Data, 1)
+		require.Empty(t, result.Deletes)
+	})
+
+	t.Run("single value", func(t *testing.T) {
+		resetTestState()
+
+		result := DecodeMap(mapScript(t, MapCmdAdd, "interests", "cars"))
+
+		require.NotNil(t, result)
+		require.Equal(t, []string{"cars"}, result.Adds)
+		require.Equal(t, "cars", result.Data["interests"])
+	})
+
+	t.Run("key with no values still names the key", func(t *testing.T) {
+		resetTestState()
+
+		result := DecodeMap(mapScript(t, MapCmdAdd, "interests"))
+
+		require.NotNil(t, result)
+		require.Equal(t, MapCmdAdd, result.Cmd)
+		require.Contains(t, result.Data, "interests")
+		require.Equal(t, "", result.Data["interests"])
+		require.Empty(t, result.Adds)
+	})
+
+	t.Run("no key returns nil", func(t *testing.T) {
+		resetTestState()
+
+		require.Nil(t, DecodeMap(mapScript(t, MapCmdAdd)))
+	})
+}
+
+// TestDecodeMapDelete covers the DELETE command. DELETE names its key first and
+// only then the values to strike, so that values are removed from the intended
+// list and no other.
+func TestDecodeMapDelete(t *testing.T) {
+	resetTestState()
+
+	t.Run("names the key before the values to strike", func(t *testing.T) {
+		resetTestState()
+
+		result := DecodeMap(mapScript(t, MapCmdDelete, "interests", "cars", "boats"))
+
+		require.NotNil(t, result)
+		require.Equal(t, MapCmdDelete, result.Cmd)
+
+		// Ordering guarantee: the first push after the command is the key, and
+		// it must not be mistaken for one of the values to strike.
+		require.Equal(t, []string{"cars", "boats"}, result.Deletes)
+		require.NotContains(t, result.Deletes, "interests")
+		require.Len(t, result.Data, 1)
+		require.Contains(t, result.Data, "interests")
+		require.Equal(t, "cars boats", result.Data["interests"])
+		require.Empty(t, result.Adds)
+	})
+
+	t.Run("values are struck only from the named list", func(t *testing.T) {
+		resetTestState()
+
+		// Two DELETEs naming different keys but the same value must not be
+		// conflated: each records the value against its own key.
+		first := DecodeMap(mapScript(t, MapCmdDelete, "interests", "cars"))
+		resetTestState()
+		second := DecodeMap(mapScript(t, MapCmdDelete, "dislikes", "cars"))
+
+		require.NotNil(t, first)
+		require.NotNil(t, second)
+		require.Contains(t, first.Data, "interests")
+		require.NotContains(t, first.Data, "dislikes")
+		require.Contains(t, second.Data, "dislikes")
+		require.NotContains(t, second.Data, "interests")
+		require.Equal(t, []string{"cars"}, first.Deletes)
+		require.Equal(t, []string{"cars"}, second.Deletes)
+	})
+
+	t.Run("key with no values still names the key", func(t *testing.T) {
+		resetTestState()
+
+		result := DecodeMap(mapScript(t, MapCmdDelete, "interests"))
+
+		require.NotNil(t, result)
+		require.Contains(t, result.Data, "interests")
+		require.Empty(t, result.Deletes)
+	})
+
+	t.Run("no key returns nil", func(t *testing.T) {
+		resetTestState()
+
+		require.Nil(t, DecodeMap(mapScript(t, MapCmdDelete)))
+	})
+}
+
+// TestDecodeMapUnhandledCommands checks that a command DecodeMap cannot turn
+// into a key/value record returns nil rather than a non-nil record with an
+// empty Data map, which callers would read as "decoded, but empty".
+func TestDecodeMapUnhandledCommands(t *testing.T) {
+	resetTestState()
+
+	t.Run("unrecognized command returns nil", func(t *testing.T) {
+		resetTestState()
+
+		// DEL was never a MAP command; nothing on chain was written with it.
+		require.Nil(t, DecodeMap(mapScript(t, "DEL", "app", "bsocial")))
+		resetTestState()
+		require.Nil(t, DecodeMap(mapScript(t, "NOTACOMMAND", "app", "bsocial")))
+		resetTestState()
+		require.Nil(t, DecodeMap(mapScript(t, "set", "app", "bsocial")), "commands are case sensitive")
+	})
+
+	t.Run("SELECT is recognized but not decoded here", func(t *testing.T) {
+		resetTestState()
+
+		// SELECT designates a txid as context for a following command, which
+		// needs ::: instruction-set support to represent.
+		txid := "b14113a50b2d1c2a3644346662de921a60e1ed63bee9962dd4c7f7ee8a1f3ffb"
+		require.Nil(t, DecodeMap(mapScript(t, MapCmdSelect, txid)))
+	})
+
+	t.Run("CLEAR is recognized but not decoded here", func(t *testing.T) {
+		resetTestState()
+
+		txid := "b14113a50b2d1c2a3644346662de921a60e1ed63bee9962dd4c7f7ee8a1f3ffb"
+		require.Nil(t, DecodeMap(mapScript(t, MapCmdClear, txid)))
+	})
+}
+
+// TestMapCommandSet pins the command vocabulary to version 2 of the MAP
+// specification: https://github.com/opldotdev/MAP
+func TestMapCommandSet(t *testing.T) {
+	resetTestState()
+
+	require.Equal(t, MapCmd("SET"), MapCmdSet)
+	require.Equal(t, MapCmd("REMOVE"), MapCmdRemove)
+	require.Equal(t, MapCmd("ADD"), MapCmdAdd)
+	require.Equal(t, MapCmd("DELETE"), MapCmdDelete)
+	require.Equal(t, MapCmd("SELECT"), MapCmdSelect)
+	require.Equal(t, MapCmd("CLEAR"), MapCmdClear)
+}
+
+// TestDecodeMapSetUnchanged pins the SET behaviour that existing callers rely
+// on, so the command-set correction does not disturb it.
+func TestDecodeMapSetUnchanged(t *testing.T) {
+	resetTestState()
+
+	result := DecodeMap(mapScript(t, MapCmdSet, "app", "bsocial", "type", "post"))
+
+	require.NotNil(t, result)
+	require.Equal(t, MapCmdSet, result.Cmd)
+	require.Equal(t, "bsocial", result.Data["app"])
+	require.Equal(t, "post", result.Data["type"])
+	require.Empty(t, result.Adds)
+	require.Empty(t, result.Deletes)
 }
