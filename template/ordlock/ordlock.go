@@ -7,6 +7,9 @@ import (
 	"github.com/bsv-blockchain/go-sdk/transaction"
 )
 
+// Decode-only. Listing creation with this template is deprecated pending a
+// replacement contract. Do not add a Lock() constructor here.
+// ORDLOCK_LISTING_DISABLED — restore when the replacement listing contract ships.
 type OrdLock struct {
 	Seller   *script.Address `json:"seller"`
 	Price    uint64          `json:"price"`
